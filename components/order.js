@@ -267,17 +267,17 @@ module.exports = React.createClass({
 		                                    </span>
                                         );
                                     }; // getButton
-
+                                    console.log('_self.state.data[idx]',_self.state.data[idx]);
                                     _self.setState({
                                         modal: {
 			 									title: 'Edit',
-			                                    content:<Pform 
+			                                    content:<Form 
 			                                            className='pure-form pure-form-aligned'
 			                                            fieldWrapper={FieldWrapper}
 			                                            sectionWrapper={SectionWrapper}
 			                                            buttons={getButtons}
 			                                            schema={schema}
-			                                            validate={validate}
+			                                            validate={Validate}
 			                                            values={_self.state.data[idx]}
 			                                            onSubmit={onSubmit}
 			                                    />
@@ -287,11 +287,7 @@ module.exports = React.createClass({
 									}; // edit
 
 								var remove = ()=>{
-
-                                    //console.log('remove-->',idx);
                                     this.state.delidx = idx;
-                                    //console.log
-                                    // this could go through flux etc.
                                     this.setState({
                                         modalIsOpen: true
                                     });

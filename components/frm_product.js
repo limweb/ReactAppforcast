@@ -2,18 +2,12 @@
 
 var React = require('react');
 var $ = React.DOM;
-console.log('$$$$$=',$);
 var pf = require('plexus-form');
 var ou = pf.ou;
 
 var fields = pf.fields;
-console.log('fields-',fields);
 
 var normalise = pf.normalise;
-console.log('normalise-',normalise);
-// var fields = require('./fields');
-// var normalise = require('./normalise');
-
 
 var Pform =  React.createClass({
   displayName: 'Form',

@@ -21,10 +21,12 @@ module.exports = React.createClass({
             this.props.classes || []);
 
         classes.push('pure-control-group');
-
+        console.log('filewapper props=',this.props);
+        console.log('filewapper state=',this.state);
+        console.log('this.props.children',this.props.children);
         return (
             <div className={classes.join(' ')} key={this.props.key}>
-                <label htmlFor={this.props.key}>{this.props.title}</label>
+                <label htmlFor={this.props.key}>{this.props.label}</label>
                 {this.props.children}
             </div>
         );

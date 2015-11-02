@@ -25,7 +25,8 @@ module.exports = React.createClass({
             this.props.classes || []);
         var helpClasses = 'form-help' + (this.props.description ? '' : ' hidden');
         var errorClasses = 'form-error' + (errors ? '' : ' hidden');
-
+        console.log('section_warpper props',this.props);
+        console.log('this.props.key',this.props.key);
         return (
             <fieldset className={classes.join(' ')} key={this.props.key}>
                 <legend className="form-section-title">
