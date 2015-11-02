@@ -2,6 +2,7 @@
 
 var React = require('react');
 var $ = React.DOM;
+console.log('$$$$$=',$);
 var pf = require('plexus-form');
 var ou = pf.ou;
 

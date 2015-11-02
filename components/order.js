@@ -4,10 +4,10 @@ import 'purecss/build/pure.css';
 import 'react-pagify/style.css';
 
 import React from 'react';
-import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
 import datasources  from './config'
 import Paginator from 'react-pagify';
 import _ from 'lodash';
+import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
 import  $  from 'jquery';
 import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
 import  FieldWrapper  from './field_wrapper';
@@ -19,6 +19,7 @@ import  Overlay  from './overlay';
 import  Pform  from './frm_product';
 let findIndex =  _.findIndex;
 let highlight = formatters.highlight;
+
 /*
 	==== Feture ================================
 	1. custom field
@@ -94,12 +95,7 @@ module.exports = React.createClass({
                 id: celldata[rowIndex].id,
             });
 
-            console.log('idx=',idx);
-
             this.state.data[idx][property] = value;
-            
-            console.log('datavalue=',this.state.data[idx][property]);
-
             this.setState({
                 data: datasources.products,
             });
@@ -150,9 +146,6 @@ module.exports = React.createClass({
                 				editor:editors.dropdown(datasources.approves,{name:'name',value:'id'}),
         					}),
         					function(approve_id){
-                            	
-                            	console.log('approve_id',approve_id);
-
                                 var a = _(datasources.approves).filter(function(approve) {
                                     return approve.id == approve_id;
                                 }).value()[0];
@@ -174,7 +167,7 @@ module.exports = React.createClass({
                             }),
                             function(order_id){
                                    var o =_(datasources.orders)
-                                      .filter(function(orderid) { 
+                                      .filter(function(orderid) {
                                           return orderid.id == order_id; 
                                        })
                                       .value()[0];
@@ -183,7 +176,7 @@ module.exports = React.createClass({
                                     } else {
                                         var  val = 'no name';
                                     }
-                                    return val;
+                                    return <span><i className='glyphicon glyphicon-star'></i>{val}</span>;
                                    },
                         ],
                     },
@@ -191,7 +184,12 @@ module.exports = React.createClass({
                         property: 'name',
                         header:   'Name',
                         width:400,
-                        cell:[highlighter('name')],
+                        cell:[
+							editable({
+                                editor: editors.input(),
+                            }),
+                        	highlighter('name')
+                        	],
                     },
                     {  
                         property: 'supplier',
@@ -245,7 +243,6 @@ module.exports = React.createClass({
                                     }; //schema
 
                                     var onSubmit = (editData, editValue) => {
-                                        console.log('onSubmit');
                                         _self.refs.modal.hide();
                                         if (editValue === 'Cancel') {
                                             return;
@@ -257,7 +254,6 @@ module.exports = React.createClass({
                                     }; //onSubmit
 
                                     var getButtons = (submit) => {
-                                        console.log('getButton');
                                         return ( 
                                         	<span>
 		                                        <input type='submit'
@@ -281,7 +277,7 @@ module.exports = React.createClass({
 			                                            sectionWrapper={SectionWrapper}
 			                                            buttons={getButtons}
 			                                            schema={schema}
-			                                            validate={Validate}
+			                                            validate={validate}
 			                                            values={_self.state.data[idx]}
 			                                            onSubmit={onSubmit}
 			                                    />
@@ -292,6 +288,13 @@ module.exports = React.createClass({
 
 								var remove = ()=>{
 
+                                    //console.log('remove-->',idx);
+                                    this.state.delidx = idx;
+                                    //console.log
+                                    // this could go through flux etc.
+                                    this.setState({
+                                        modalIsOpen: true
+                                    });
 								};	// remove				
                                return {
                                     value: ( 
@@ -323,7 +326,6 @@ module.exports = React.createClass({
         });
     },
     closeModal: function() {
-        //console.log('close modal');
         this.state.delidx = null;
         this.setState({modalIsOpen: false});
     },
@@ -341,7 +343,6 @@ module.exports = React.createClass({
         
         // setTimeout(function(){
           // $(_self.refs.overay.getDOMNode()).hide();
-        //   //console.log('hide');
         // },2500);
     },
 	render: function() {
@@ -352,7 +353,6 @@ module.exports = React.createClass({
 		var pagination = this.state.pagination;
 
         if (this.state.search.query) {
-        	console.log('query',this.state.search.query);
             data = Search.search(
                 data,
                 columns,
@@ -363,8 +363,6 @@ module.exports = React.createClass({
 
         data = sortColumn.sort(data, this.state.sortingColumn);
         var paginated = Paginator.paginate(data, pagination);
-        console.log('data',paginated.data);
-
 		return (
 			<div>
 				<div className="row">
@@ -475,3 +473,4 @@ module.exports = React.createClass({
         });
     },
 });
+

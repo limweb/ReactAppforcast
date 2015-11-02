@@ -303,7 +303,7 @@ var tabList = [
               currentContent:1,
               loginted:1,
               user:{
-               name:'',
+               name:'System',
                type:'',
                email:'',
                img:''
