@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha256-k2/8zcNbxVIh5mnQ52A0r3a6jAgMGxFJFE2707UxGCk= sha512-ZV9KawG2Legkwp3nAlxLIVFudTauWuBpC10uEafMHYL0Sarrz5A7G79kXh5+5+woxQ5HM559XX2UZjMJ36Wplg==" crossorigin="anonymous">
+	<title>TestBabel</title>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="redux.js"></script>
+	<script src="react-redux.js"></script>
+	<script src="browser.js"></script>
+	<script src="browser-polyfill.min.js"></script>
+</head>
+<body>
+    <input id="data" type="hidden" value="{&quot;count&quot;: 7}">
+	<div id="content" ></div>	
+</body>
+<script  type="text/babel">
+
+const data = JSON.parse(document.getElementById("data").value);
+console.log('data=',data);
+
+const Provider = ReactRedux.Provider;
+console.log('provider=',Provider);
+
+const INCREMENT_COUNTER = "INCREMENT_COUNTER";
+const DECREMENT_COUNTER = "DECREMENT_COUNTER";
+
+const bindActionCreators = Redux.bindActionCreators;
+const connect  = ReactRedux.connect;
+
+function increment() {
+  return {
+    type: INCREMENT_COUNTER
+  };
+}
+
+function decrement() {
+  return {
+    type: DECREMENT_COUNTER
+  };
+}
+
+
+ const reducer = (state = {}, action) => {
+  const newState = Object.assign({}, state);
+  switch (action.type) {
+    case INCREMENT_COUNTER:
+      newState.count++;
+      return newState;
+    case DECREMENT_COUNTER:
+      newState.count--;
+      return newState;
+    default:
+      return newState;
+  }
+};
+console.log('reducer=',reducer);
+
+const createStore  = Redux.createStore;
+console.log('createstore=',createStore);
+
+const store =  (data = {count: 0}) => {
+  return createStore(reducer, data);
+};
+console.log('store=',store);
+
+const App = React.createClass({
+  render() {
+    const { count, dispatch } = this.props;
+    const actions = bindActionCreators(Actions, dispatch);
+    return (
+      <div className="container">
+        <div className="page-header">
+          <h1>Counter!</h1>
+        </div>
+        <p>{count}</p>
+        <button className="btn btn-default" onClick={actions.increment}>
+          <i className="fa fa-plus fa-fw" />
+        </button>
+        <button className="btn btn-default" onClick={actions.decrement}>
+          <i className="fa fa-minus fa-fw" />
+        </button>
+      </div>
+    );
+  }
+});
+
+
+
+
+ReactDOM.render(
+<Provider store={store(data)} >
+     {() => <App />}
+</Provider>,
+  document.getElementById("content")
+);
+
+</script>
+</html>

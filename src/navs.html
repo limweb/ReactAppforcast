@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style>
+    .special-img {
+        position: relative;
+        top: -5px;
+        float: left;
+        left: -5px;
+    }
+    
+    .profile-image {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+    /*
+ * Navbar
+ */
+    
+    .navbar-top {
+        margin-bottom: 0px;
+        background-color: #428bca;
+        border-color: #3174b0;
+    }
+    
+    .navbar-top .navbar-brand {
+        color: #ffffff;
+    }
+    
+    .navbar-top .navbar-brand:hover,
+    .navbar-top .navbar-brand:focus {
+        color: #ecf0f1;
+    }
+    
+    .navbar-top .navbar-text {
+        color: #ffffff;
+    }
+    
+    .navbar-top .navbar-nav > li > a {
+        color: #ffffff;
+    }
+    
+    .navbar-top .navbar-nav > li > a:hover,
+    .navbar-top .navbar-nav > li > a:focus {
+        color: #ecf0f1;
+        background-color: #3174b0;
+    }
+    
+    .navbar-top .navbar-nav > .active > a,
+    .navbar-top .navbar-nav > .active > a:hover,
+    .navbar-top .navbar-nav > .active > a:focus {
+        color: #ecf0f1;
+        background-color: #3174b0;
+    }
+    
+    .navbar-top .navbar-nav > .open > a,
+    .navbar-top .navbar-nav > .open > a:hover,
+    .navbar-top .navbar-nav > .open > a:focus {
+        color: #ecf0f1;
+        background-color: #3174b0;
+    }
+    
+    .navbar-top .navbar-toggle {
+        border-color: #3174b0;
+    }
+    
+    .navbar-top .navbar-toggle:hover,
+    .navbar-top .navbar-toggle:focus {
+        background-color: #3174b0;
+    }
+    
+    .navbar-top .navbar-toggle .icon-bar {
+        background-color: #ffffff;
+    }
+    
+    .navbar-top .navbar-collapse,
+    .navbar-top .navbar-form {
+        border-color: #ffffff;
+    }
+    
+    .navbar-top .navbar-link {
+        color: #ffffff;
+    }
+    
+    .navbar-top .navbar-link:hover {
+        color: #ecf0f1;
+    }
+    
+    @media (max-width: 767px) {
+        .navbar-top .navbar-nav .open .dropdown-menu > li > a {
+            color: #ffffff;
+        }
+        .navbar-top .navbar-nav .open .dropdown-menu > li > a:hover,
+        .navbar-top .navbar-nav .open .dropdown-menu > li > a:focus {
+            color: #ecf0f1;
+        }
+        .navbar-top .navbar-nav .open .dropdown-menu > .active > a,
+        .navbar-top .navbar-nav .open .dropdown-menu > .active > a:hover,
+        .navbar-top .navbar-nav .open .dropdown-menu > .active > a:focus {
+            color: #ecf0f1;
+            background-color: #3174b0;
+        }
+    }
+    </style>
+    <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js" type="text/javascript"></script>
+    <script src="https://fb.me/react-with-addons-0.13.3.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js" type="text/javascript"></script>
+    <script src="http://momentjs.com/downloads/moment.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="content" />
+</body>
+<script type="text/jsx">
+    var App = React.createClass({ 
+        alerttest:function(){
+			alert('test');
+        },
+        toggle:function(){
+		  $('.navbar-toggle').click();
+		  console.log('Click');
+        },
+	   componentDidMount:function(){
+	   },
+    	render: function() { 
+		    return (
+		    <div className="App">
+		        <div className="navbar navbar-static-top masthead navbar-top " role="navigation">
+		            <div className="container">
+		                <div className="navbar-header">
+		                    <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#top-nav">
+		                        <span className="sr-only">Toggle navigation</span>
+		                        <span className="icon-bar"></span>
+		                        <span className="icon-bar"></span>
+		                        <span className="icon-bar"></span>
+		                    </button>
+		                    <a  onClick={this.alerttest} className="navbar-brand" href="#">Development</a>
+		                </div>
+		                <div className="collapse navbar-collapse navbar-ex1-collapse" id="top-nav">
+		                    <ul className="nav navbar-nav">
+		                        <li onClick={this.toggle} ><a href="#"><i className="fa fa-home"></i> Home</a></li>
+		                        <li onClick={this.toggle} ><a href="#"><i className="fa fa-home"></i> Home</a></li>
+		                        <li onClick={this.toggle} ><a href="#"><i className="fa fa-home"></i> Home</a></li>
+		                        <li onClick={this.toggle} ><a href="#"><i className="fa fa-home"></i> Home</a></li>
+		                        <li onClick={this.toggle} ><a href="#"><i className="fa fa-home"></i> Home</a></li>
+		                        <li onClick={this.toggle} ><a href="#"><i className="fa fa-home"></i> Home</a></li>
+		                    </ul>
+		                    <ul className="nav navbar-nav navbar-right">
+		                        <li className="active"><a href="#"><i className="fa fa-suitcase"></i> Projects</a></li>
+		                        <li className="dropdown">
+		                            <a href="#" className="dropdown-toggle profile-image" data-toggle="dropdown">
+		                            	<img src="http://placehold.it/30x30" className="img-circle special-img" /> Test <b className="caret"></b>
+		                             </a>
+		                            <ul className="dropdown-menu">
+		                                <li onClick={this.toggle} ><a href="#"><i className="fa fa-cog"></i> Account</a></li>
+		                                <li className="divider"></li>
+		                                <li onClick={this.toggle} ><a href="#"><i className="fa fa-sign-out"></i> Sign-out</a></li>
+		                            </ul>
+		                        </li>
+		                    </ul>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		    ); 
+		 } 
+	}); 
+
+	React.render(<App />,document.getElementById('content'));
+</script>
+<script  type="text/javascript">
+	//write you  script
+	$(document).ready(function(){
+	    $(".dropdown").mouseover(function(){
+	        $(".dropdown-menu").show();
+	    })
+	    $(".dropdown").mouseout(function(){
+	        $(".dropdown-menu").hide();
+	    });
+	});
+</script>
+
+</html>

@@ -1,0 +1,34 @@
+{
+    "name": "servit/databasel5",
+    "description": "Service for Connection Databse with Eloquent V5",
+    "license": "MIT",
+    "authors": [{
+        "name": "Thongchai Lim",
+        "email": "limweb@hotmail.com"
+    }],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/contracts": "~5.0@dev",
+        "illuminate/support": "~5.0@dev",
+        "illuminate/database": "~5.0@dev",
+        "yajra/laravel-oci8": "dev-master",
+        "windwalker/renderer": "2.*",
+        "illuminate/view": "5.*",
+        "twig/twig": "2.0.*@dev",
+        "illuminate/events": "~5.0@dev",
+        "illuminate/pagination": "~5.0@dev",
+        "symfony/var-dumper": "2.6.*",
+        "mpdf/mpdf": "dev-master",
+        "phpmailer/phpmailer": "~5.2"
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
