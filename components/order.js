@@ -30,7 +30,7 @@ let highlight = formatters.highlight;
 	6. hightlight filter
 	7. footer 
 	8. Header
-	8. inline edit  dropdown , input text, boolean
+	9. inline edit  dropdown , input text, boolean
 
 
 
@@ -326,17 +326,21 @@ module.exports = React.createClass({
         this.setState({modalIsOpen: false});
     },
     deleteitem: function(e) {
-        this.setState({modalIsOpen: false});
-        e.preventDefault();
-        this.state.data.splice(this.state.delidx, 1);
+        console.log('test');
+        
+        // this.setState({modalIsOpen: false});
+        // e.preventDefault();
+        // this.state.data.splice(this.state.delidx, 1);
 
-        this.setState({
-            data: this.state.data
-        });
+        // this.setState({
+        //     data: this.state.data
+        // });
     },
     componentDidMount: function() {
-        // var _self = this;
-        
+        var _self = this;
+        console.log('componentDidMount');
+        console.log(_self.refs.inputx);
+        $(_self.refs.inputx).editable();
         // setTimeout(function(){
           // $(_self.refs.overay.getDOMNode()).hide();
         // },2500);
@@ -368,6 +372,7 @@ module.exports = React.createClass({
 				       <div className="panel-title">
 				    	<b>Order</b>
 				       </div>
+                       <input ref='inputx' type="text" ></input>
 				    </div>
 				      <div className="panel-body">
 					 <Overlay ref="overay" />

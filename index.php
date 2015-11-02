@@ -21,9 +21,11 @@ class IndexApp extends RestfulServer {
 				    <link rel="stylesheet" href="css/login.css">
 				    <link rel="stylesheet" href="css/app.css">
 				    <link rel="stylesheet" href="bower_components/pure/pure.css">
-				    <script src="js/jquery-latest.js" type="text/javascript"></script>
+				    <link href="bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+				    <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
 				    <script src="js/bootstrap.min.js"></script>
 				    <script src="js/moment.js" type="text/javascript"></script>
+					<script src="bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
 				</head>
 				<body>
 				    <div id="content"  />

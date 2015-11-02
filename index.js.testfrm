@@ -1,0 +1,12 @@
+'use strict';
+
+// require('purecss/pure.css');
+require('./main.css');
+require('./demo.css');
+
+
+var React = require('react'),
+    App = require('./app');
+
+
+React.render(<App />, document.body);
