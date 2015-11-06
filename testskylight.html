@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>React-SkyLight: React component for modal and dialogs</title>
+<meta name="description" content="React-SkyLight: React component for modal and dialogs">
+<meta name="viewport" content="width=device-width">
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react-with-addons.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react-dom.js" type="text/javascript"></script>
+<script src="http://momentjs.com/downloads/moment.js" type="text/javascript"></script>
+<style type="text/css" media="screen">
+.browsehappy {
+    margin: .2em 0;
+    background: #ccc;
+    color: #000;
+    padding: .2em 0;
+}
+body {
+    padding: 0;
+    margin: 0;
+    font: 14px/20px "Helvetica Neue", sans-serif, arial;
+    color: #444;
+    background: #fff;
+}
+header {
+    position: fixed;
+    background: #ecf0f1;
+    width: 100%;
+    padding: 20px;
+    z-index: +1;
+    top: 0;
+}
+header h1 {
+    color: #2980b9;
+    font-size: 22px;
+    font-weight: 400;
+    margin: 0;
+}
+#content, article {
+    margin-top: 70px;
+    padding: 20px;
+}
+
+button {
+    line-height: 20px;
+    margin: 10px;
+}
+
+.center, footer {
+    text-align: center;
+}
+
+
+/* MODAL/DIALOG CSS  */
+.skylight-dialog {
+    width: 50%;
+    height: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -25%;
+    background-color: #fff;
+    border-radius: 2px;
+    z-index: 100;
+    padding: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+}
+.skylight-dialog--close {
+    cursor: pointer;
+    float: right;
+    font-size: 1.6em;
+}
+.skylight-dialog__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, .3);
+}
+</style>
+</head>
+<body id="main">
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<header>
+<h1>React SkyLight Demo Page</h1>
+</header>
+
+<section id="content">
+</section>
+
+
+<article>
+<p class="center">React-SkyLight is a simple react component for modals and dialogs. Powerful, lightweight, and unopinionated in design.</p>
+<p class="center"><a href="https://github.com/marcio/react-skylight">Docs and more details in our github repository</a></p>
+</article>
+
+
+<footer>
+</footer>
+
+<script type="text/babel">
+
+var SkyLight = React.createClass({
+  propTypes: {
+    title: React.PropTypes.string,
+    showOverlay: React.PropTypes.bool,
+    beforeOpen: React.PropTypes.func,
+    afterOpen: React.PropTypes.func,
+    beforeClose: React.PropTypes.func,
+    afterClose: React.PropTypes.func,
+    visible: React.PropTypes.bool
+},
+getDefaultProps: function () {
+    return {
+      title: '',
+      showOverlay: true
+  }
+},
+getInitialState: function () {
+    return {
+      isVisible: false
+  };
+},
+show: function () {
+    this.setState({isVisible: true});
+},
+hide: function () {
+    this.setState({isVisible: false});
+},
+componentWillUpdate: function (nextProps, nextState) {
+    if (nextState.isVisible && this.props.beforeOpen) {
+      this.props.beforeOpen();
+  }
+
+  if (!nextState.isVisible && this.props.beforeClose) {
+      this.props.beforeClose();
+  }
+},
+componentDidUpdate: function (prevProps, prevState) {
+    if (!prevState.isVisible && this.props.afterOpen) {
+      this.props.afterOpen();
+  }
+
+  if (prevState.isVisible && this.props.afterClose) {
+      this.props.afterClose();
+  }
+},
+render: function () {
+
+    var overlay;
+    var displayStyle = this.state.isVisible ? {display: 'block'} : {display: 'none'};
+
+    if (this.props.showOverlay) {
+       overlay = (<div className="skylight-dialog__overlay" style={displayStyle}></div>);
+   }
+
+   return (
+      <section className="skylight-wrapper">
+      {overlay}
+      <div className="skylight-dialog" style={displayStyle}>
+      <a role="button" className="skylight-dialog--close" onClick={this.hide}>&times;</a>
+      <h2>{this.props.title}</h2>
+      {this.props.children}
+      </div>
+      </section>
+      )
+}
+});
+
+
+class Test extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {name: 'test'};
+  }
+  testabc(){
+    this.props.initialCount=10;
+  }
+  render() {
+    console.log('test props=',this.props);
+    return (
+      <div>TEST ES6 </div>
+      );
+  }
+}
+
+Test.defaultProps = { initialCount: 0 };
+
+var FrmAdd = React.createClass({
+    submit:function(e){
+        e.preventDefault();
+        console.log(this.props);
+        if(e.target.name == 'cencle'){
+            this.props.parent._close();            
+        } else {
+            let o = {};
+            o.fname = this.refs.firstname.value;
+            o.lname = this.refs.lastname.value;
+            console.log('click submit',o);
+            this.props.parent.submit(o);
+        }
+    },
+    render: function() {
+        return (
+            <form >
+            Hello, I dont have any callback.<br />
+            <table>
+            <tbody>
+            <tr>
+            <td>First name:</td>
+            <td><input ref="firstname" type="text" name="firstname"></input></td>
+            </tr>
+            <tr>
+            <td>Last name:</td>
+            <td><input type="text" ref="lastname" name="lastname"></input></td>
+            </tr>
+            <tr>
+            <td><input type="submit" onClick={this.submit} name="submit" value="Submit" /></td>
+            <td><input type="submit"  onClick={this.submit} name="cencle" value="Cencle" /></td>
+            </tr>
+            </tbody>
+            </table>
+            </form>
+            );
+    }
+}); 
+
+var App = React.createClass({
+  showFirstDialog: function(){
+    this.refs.fisrtDialog.show();
+},
+showSecondDialog: function(){
+    Test.testabc();
+    this.refs.secondDialog.show();
+},
+submit: function(o){
+    console.log('in skylight',o);
+    this.refs.secondDialog.hide();
+    alert('update successed.');
+},    
+_close: function(){
+    this.refs.secondDialog.hide();
+},
+render:function(){
+    return (
+      <div>
+      <Test />
+      <p className="center">
+      <button onClick={this.showSecondDialog}>Modal without callbacks</button>
+      <button onClick={this.showFirstDialog}>Modal with callbacks</button>
+      </p>
+      <SkyLight ref="fisrtDialog" title="Hello!, I'm a modal with callbacks!"
+      beforeOpen={this._executeBeforeFirstModalOpen}
+      afterOpen={this._executeAfterFirstModalOpen}
+      beforeClose={this._executeBeforeFirstModalClose}
+      afterClose={this._executeAfterFirstModalClose}
+
+      >
+      I've callbacks!
+      <FrmAdd parent={this} /> 
+      </SkyLight>
+      <SkyLight ref="secondDialog" title="Hi, I'm a simple modal"
+      >
+      <FrmAdd parent={this} />  
+      </SkyLight>
+      </div>
+      )
+},
+_executeBeforeFirstModalOpen: function(){
+    alert('Executed before open');
+},
+_executeAfterFirstModalOpen: function(){
+    alert('Executed after open');
+},
+_executeBeforeFirstModalClose: function(){
+    alert('Executed before close');
+},
+_executeAfterFirstModalClose: function(){
+    alert('Executed after close');
+}
+});
+
+ReactDOM.render(<App/>, document.getElementById("content"));
+
+</script>
+
+</body>
+</html>

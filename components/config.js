@@ -1,6 +1,6 @@
 module.exports = {
 
-    orders: [{
+    ordres: [{
         "id": 1,
         "name": "\u0e44\u0e1e\u0e42\u0e23\u0e08\u0e19\u0e4c",
         "status": 1,

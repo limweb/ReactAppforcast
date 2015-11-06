@@ -16,11 +16,12 @@ class IndexApp extends RestfulServer {
 				    <meta charset="utf-8">
 				    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 				    <title>Forcast App</title>
-				    <link rel="stylesheet" href="css/font-awesome.min.css">
-				    <link rel="stylesheet" href="css/bootstrap.min.css">
 				    <link rel="stylesheet" href="css/login.css">
 				    <link rel="stylesheet" href="css/app.css">
+				    <link rel="stylesheet" href="css/font-awesome.min.css">
+				    <link rel="stylesheet" href="css/bootstrap.min.css">
 				    <link rel="stylesheet" href="bower_components/pure/pure.css">
+				    <link rel="stylesheet" href="css/index.css">
 				    <link href="bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 				    <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
 				    <script src="js/bootstrap.min.js"></script>

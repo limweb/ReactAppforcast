@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Reflux  from 'reflux';
-import Order from './components/order';
+import Order  from './components/order/order';
 import Approve from './components/approve';
 import Sale  from './components/sale';
 import Product  from './components/product';
@@ -15,7 +15,8 @@ import LoginStore from './store/loginstore';
 import { Mike,Overlay,Footer,Raph,Donnie }  from './components/common';
 import $ from 'jquery';
 
-
+import OrderActons  from './actions/orderaction';
+import OrderStore from './store/orderstore';
 
 
 var tabList = [
@@ -265,10 +266,12 @@ var tabList = [
 
     var Content = React.createClass({
         render: function(){
+            let _this = this;
             console.log('current tab =',this.props.currentTab);
+            console.log('props in Content = ',_this.props);
                 return(
                         <div className="tab-content">
-                            { this.props.currentTab === 1   ? <Order      className="tab-pane" />  :null}
+                            { this.props.currentTab === 1   ? <Order  test="test"  datasources={_this.props.datasources}   className="tab-pane" />  :null}
                             { this.props.currentTab === 2   ? <Approve    className="tab-pane" />  :null}
                             { this.props.currentTab === 3   ? <Sale       className="tab-pane" />  :null}
                             { this.props.currentTab === 4   ? <Product    className="tab-pane" />  :null}
@@ -294,7 +297,7 @@ var tabList = [
 
 
    var App = React.createClass({
-      mixins:[Reflux.listenTo(LoginStore,'onStore')],
+      mixins:[Reflux.listenTo(LoginStore,'onStore'),Reflux.listenTo(OrderStore,'onOrderStore')],
       getInitialState: function () {        
           return {
               tabList: tabList,
@@ -302,8 +305,9 @@ var tabList = [
               currentTab: 1,
               currentContent:1,
               loginted:1,
+              datasources:null,
               user:{
-               name:'System',
+               name:'',
                type:'',
                email:'',
                img:''
@@ -313,6 +317,10 @@ var tabList = [
       onStore:function(data) {
          console.log('data=',data);
          this.setState({user:data});
+      },
+      onOrderStore:function(data){
+         // console.log('onOrderStore',data);
+         // this.setState({datasources:data,data:data});
       },
       componentDidMount: function() {
          console.log('didMount');
@@ -398,7 +406,7 @@ var tabList = [
           <div id="wrapper">
             <div id="main-wrapper" className="col-md-12 pull-right">
             <div id="main">
-            <Content currentTab={this.state.currentContent} />
+            <Content datasources={this.state.datasources} currentTab={this.state.currentContent} />
           </div>        
           </div>        
           </div>        
