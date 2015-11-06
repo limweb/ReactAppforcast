@@ -6,7 +6,6 @@ import 'purecss/build/pure.css';
 import 'react-pagify/style.css';
 import './order.css';
 import React from 'react';
-import datasources  from '../config'
 import Paginator from 'react-pagify';
 import _ from 'lodash';
 import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
@@ -24,6 +23,12 @@ let findIndex =  _.findIndex;
 let highlight = formatters.highlight;
 import OrderActons  from '../../actions/orderaction';
 import OrderStore from '../../store/orderstore';
+
+var datasources = {
+  products:[],
+  ordres:[],
+  approves:[],
+};
 
 /*
     ==== Feture ================================
@@ -53,20 +58,20 @@ const customStyles = {
 };
 
 
-    // mixins:[Reflux.listenTo(OrderStore,'onStore')],
 module.exports = React.createClass({
     displayName: 'FullTable',
+    mixins:[Reflux.listenTo(OrderStore,'onStore')],
     onStore:function(data) {
-         // console.log('data=',data);
-         // this.setState({
-         //        data: data.products,
-         // });
+         datasources = data;
+         this.setState({
+                data: data.products,
+         });
+    },
+    dropdownOrder(){
+        return datasources.ordres;
     },
     getInitialState() {
         let _this = this;
-        console.log("order state =",_this.state);
-        console.log("order props =",_this.props);
-
         var properties = {
             approve_id:{
                 type: 'number'
@@ -100,22 +105,7 @@ module.exports = React.createClass({
             },
         };
 
-        
-        var editable = cells.edit.bind(this, 'editedCell', (value, celldata, rowIndex, property) => {
-
-            var idx = findIndex(this.state.data, {
-                id: celldata[rowIndex].id,
-            });
-
-            this.state.data[idx][property] = value;
-            this.setState({
-                data: datasources.products,
-            });
-        });
-        
-        var highlighter = (column) => highlight((value) => {
-            return Search.matches(column, value, this.state.search.query);
-        }); 
+ 
 
         return {
             editedCell: null,
@@ -141,8 +131,73 @@ module.exports = React.createClass({
                 },
             },
             sortingColumn: null, // reference to sorting column
-            //------ Column of Table-----
-            columns: [
+            modal: {
+                title: 'title',
+                content: 'content',
+            },
+            pagination: {
+                page: 0,
+                perPage: 10
+            }
+        };
+    },
+    onSearch(search) {
+        this.setState({
+            search: search
+        });
+    },
+    closeModal: function() {
+        this.state.delidx = null;
+        this.setState({modalIsOpen: false});
+    },
+    deleteitem: function(e) {
+        console.log('test');
+    },
+    componentDidMount: function() {
+        var _self = this;
+        OrderActons.getOrders(); // Load data 
+    },
+    submit:function() {
+        alert('test');
+        this._close();
+    },
+    _close:function(){
+        let _self = this;
+        _self.refs.modal.hide();
+    },
+    _Additem:function(){
+          let _self = this;
+          _self.setState({
+                        modal: {
+                            title: 'Add Item',
+                            content: {
+
+                            },
+                            editing:0,
+                        },
+         });
+        _self.refs.modal.show();
+    },
+    getColumn:function(){
+        let _this = this;
+        
+        var editable = cells.edit.bind(_this, 'editedCell', (value, celldata, rowIndex, property) => {
+
+            var idx = findIndex(_this.state.data, {
+                id: celldata[rowIndex].id,
+            });
+
+            _this.state.data[idx][property] = value;
+            _this.setState({
+                data: datasources.products,
+            });
+        });
+        
+        var highlighter = (column) => highlight((value) => {
+            return Search.matches(column, value, _this.state.search.query);
+        });
+
+        return [
                     {
                         property: 'id',
                         header:   'ID',
@@ -175,10 +230,9 @@ module.exports = React.createClass({
                         width:400,
                         cell:[
                             editable({
-                                editor:editors.dropdown(datasources.ordres,{value:'id',name:'name'}),
+                                editor:editors.dropdown(_this.dropdownOrder(),{value:'id',name:'name'}),
                             }),
                             function(order_id){
-                                   console.log('order_id =',order_id,datasources);
                                    var o =_(datasources.ordres)
                                       .filter(function(orderid) {
                                           return orderid.id == order_id; 
@@ -244,8 +298,7 @@ module.exports = React.createClass({
                     {   header: 'Action',
                         cell:[ 
                             function(value, celldata, rowIndex) {
-                                var _self = this;
-                                var idx = findIndex(this.state.data, {
+                                var idx = findIndex(_this.state.data, {
                                     id: celldata[rowIndex].id,
                                 });
 
@@ -256,95 +309,49 @@ module.exports = React.createClass({
                                         properties: properties,
                                     }; //schema
 
-                                    _self.setState({
+                                    _this.setState({
                                         modal: {
                                             title: 'Edit',
-                                            content: _self.state.data[idx],
+                                            content: _this.state.data[idx],
                                             editing:0,
                                         },
                                     });//setState
-                                    _self.refs.modal.show();
+                                    _this.refs.modal.show();
                                 }; // edit
 
                                 var remove = ()=>{
-                                    this.state.delidx = idx;
+                                    _this.state.delidx = idx;
                                        // <!-- modalIsOpen: true -->
-                                    this.setState({
+                                    _this.setState({
                                       model: {
                                                 title: 'Remove Test',
-                                                content: _self.state.data[idx],
+                                                content: _this.state.data[idx],
                                                 editing:2,
                                              },
                                     });
-                                    _self.refs.modal.show();
+                                    _this.refs.modal.show();
                                 };  // remove               
                                return {
                                     value: ( 
                                     <span>
-                                        <span className='edit' onClick={edit.bind(this)} style={{cursor: 'pointer'}}>
+                                        <span className='edit' onClick={edit.bind(_this)} style={{cursor: 'pointer'}}>
                                             &#8665;
                                         </span>
-                                        <span className='remove' onClick={remove.bind(this)} style={{cursor: 'pointer'}}>
+                                        <span className='remove' onClick={remove.bind(_this)} style={{cursor: 'pointer'}}>
                                             &#10007;
                                         </span>
                                    </span>
                                )}; //return 
-                            }.bind(this),//custom column
-                    ]},
-            ],
-            modal: {
-                title: 'title',
-                content: 'content',
-            },
-            pagination: {
-                page: 0,
-                perPage: 10
-            }
-        };
-    },
-    onSearch(search) {
-        this.setState({
-            search: search
-        });
-    },
-    closeModal: function() {
-        this.state.delidx = null;
-        this.setState({modalIsOpen: false});
-    },
-    deleteitem: function(e) {
-        console.log('test');
-    },
-    componentDidMount: function() {
-        var _self = this;
-        console.log('componentDidMount');
-        console.log(_self.refs.inputx);
-        // OrderActons.getOrders();
-    },
-    submit:function() {
-        alert('test');
-        this._close();
-    },
-    _close:function(){
-        let _self = this;
-        _self.refs.modal.hide();
-    },
-    _Additem:function(){
-          let _self = this;
-          _self.setState({
-                        modal: {
-                            title: 'Add Item',
-                            content: {
+                            }.bind(_this),//custom column
 
-                            },
-                            editing:0,
-                        },
-         });
-        _self.refs.modal.show();
+                    ]},
+            ];
     },
     render: function() {
         let _self = this;
         var header =  _self.state.header;
-        var columns = _self.state.columns;
+        // var columns = _self.state.columns;
+        var columns = _self.getColumn();
         var data =    _self.state.data;
         var pagination = this.state.pagination;
 
@@ -369,7 +376,6 @@ module.exports = React.createClass({
                        <div className="panel-title">
                         <b>Order</b>
                        </div>
-                       <input ref='inputx' type="text" ></input>
                     </div>
                       <div className="panel-body">
                      <Overlay ref="overay" />
