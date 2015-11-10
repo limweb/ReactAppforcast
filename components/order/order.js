@@ -65,47 +65,15 @@ module.exports = React.createClass({
          datasources = data;
          this.setState({
                 data: data.products,
+                columns: this.getColumn(),
+                header:  this.getHeader()
          });
     },
     dropdownOrder(){
         return datasources.ordres;
     },
     getInitialState() {
-        let _this = this;
-        var properties = {
-            approve_id:{
-                type: 'number'
-            },
-            created_at:{
-                type: 'string'
-            },
-            created_by:{
-                type: 'string'
-            },
-            id:{
-                type: 'number'
-            },
-            name:{
-                type: 'string'
-            },
-            order_id:{
-                type: 'number'
-            },
-            status:{
-                type: 'boolean'
-            },
-            supplier:{
-                type: 'string'
-            },
-            updated_at:{
-                type: 'string'
-            },
-            updated_by:{
-                type: 'string'
-            },
-        };
-
- 
+        let _self = this;
 
         return {
             editedCell: null,
@@ -116,20 +84,6 @@ module.exports = React.createClass({
                 column: '',
                 query: ''
             },
-            header: {
-                onClick: (column) => {
-                    // reset edits
-                    this.setState({
-                        editedCell: null
-                    });
-
-                    sortColumn(
-                        this.state.columns,
-                        column,
-                        this.setState.bind(this)
-                    );
-                },
-            },
             sortingColumn: null, // reference to sorting column
             modal: {
                 title: 'title',
@@ -138,7 +92,9 @@ module.exports = React.createClass({
             pagination: {
                 page: 0,
                 perPage: 10
-            }
+            },
+            header:null,
+            columns:null
         };
     },
     onSearch(search) {
@@ -178,24 +134,88 @@ module.exports = React.createClass({
          });
         _self.refs.modal.show();
     },
-    getColumn:function(){
-        let _this = this;
-        
-        var editable = cells.edit.bind(_this, 'editedCell', (value, celldata, rowIndex, property) => {
+    getHeader:function(){
+        let _self = this;
+        console.log('getHeader=',_self.state.header);
 
-            var idx = findIndex(_this.state.data, {
+        if(_self.state.header){
+            return _self.state.header;
+            console.log('Heas Header');
+        } else {
+            console.log('NO Heas Header');
+        // }
+          return  {
+                onClick: (column) => {
+                    // reset edits
+                    _self.setState({
+                        editedCell: null
+                    });
+                    console.log('columns=',_self.getColumn());
+                    sortColumn(
+                        _self.getColumn(),
+                        column,
+                        _self.setState.bind(_self)
+                    );
+                },
+            };
+        }
+    },
+    getColumn:function(){
+        let _self = this;
+
+        var properties = {
+            approve_id:{
+                type: 'number'
+            },
+            created_at:{
+                type: 'string'
+            },
+            created_by:{
+                type: 'string'
+            },
+            id:{
+                type: 'number'
+            },
+            name:{
+                type: 'string'
+            },
+            order_id:{
+                type: 'number'
+            },
+            status:{
+                type: 'boolean'
+            },
+            supplier:{
+                type: 'string'
+            },
+            updated_at:{
+                type: 'string'
+            },
+            updated_by:{
+                type: 'string'
+            },
+        };
+        
+        var editable = cells.edit.bind(_self, 'editedCell', (value, celldata, rowIndex, property) => {
+            console.log('edit----change-------------------');
+            var idx = findIndex(_self.state.data, {
                 id: celldata[rowIndex].id,
             });
 
-            _this.state.data[idx][property] = value;
-            _this.setState({
+            _self.state.data[idx][property] = value;
+            _self.setState({
                 data: datasources.products,
             });
         });
         
         var highlighter = (column) => highlight((value) => {
-            return Search.matches(column, value, _this.state.search.query);
+            return Search.matches(column, value, _self.state.search.query);
         });
+
+        if(_self.state.columns) {
+            return _self.state.columns;
+        } else {
+
 
         return [
                     {
@@ -230,9 +250,10 @@ module.exports = React.createClass({
                         width:400,
                         cell:[
                             editable({
-                                editor:editors.dropdown(_this.dropdownOrder(),{value:'id',name:'name'}),
+                                editor:editors.dropdown(_self.dropdownOrder(),{value:'id',name:'name'}),
                             }),
                             function(order_id){
+                                   console.log('order_id',order_id);
                                    var o =_(datasources.ordres)
                                       .filter(function(orderid) {
                                           return orderid.id == order_id; 
@@ -298,7 +319,7 @@ module.exports = React.createClass({
                     {   header: 'Action',
                         cell:[ 
                             function(value, celldata, rowIndex) {
-                                var idx = findIndex(_this.state.data, {
+                                var idx = findIndex(_self.state.data, {
                                     id: celldata[rowIndex].id,
                                 });
 
@@ -309,62 +330,66 @@ module.exports = React.createClass({
                                         properties: properties,
                                     }; //schema
 
-                                    _this.setState({
+                                    _self.setState({
                                         modal: {
                                             title: 'Edit',
-                                            content: _this.state.data[idx],
+                                            content: _self.state.data[idx],
                                             editing:0,
                                         },
                                     });//setState
-                                    _this.refs.modal.show();
+                                    _self.refs.modal.show();
                                 }; // edit
 
                                 var remove = ()=>{
-                                    _this.state.delidx = idx;
+                                    _self.state.delidx = idx;
                                        // <!-- modalIsOpen: true -->
-                                    _this.setState({
+                                    _self.setState({
                                       model: {
                                                 title: 'Remove Test',
-                                                content: _this.state.data[idx],
+                                                content: _self.state.data[idx],
                                                 editing:2,
                                              },
                                     });
-                                    _this.refs.modal.show();
+                                    _self.refs.modal.show();
                                 };  // remove               
                                return {
                                     value: ( 
                                     <span>
-                                        <span className='edit' onClick={edit.bind(_this)} style={{cursor: 'pointer'}}>
+                                        <span className='edit' onClick={edit.bind(_self)} style={{cursor: 'pointer'}}>
                                             &#8665;
                                         </span>
-                                        <span className='remove' onClick={remove.bind(_this)} style={{cursor: 'pointer'}}>
+                                        <span className='remove' onClick={remove.bind(_self)} style={{cursor: 'pointer'}}>
                                             &#10007;
                                         </span>
                                    </span>
                                )}; //return 
-                            }.bind(_this),//custom column
+                            }.bind(_self),//custom column
 
                     ]},
             ];
+        }
     },
     render: function() {
         let _self = this;
-        var header =  _self.state.header;
-        // var columns = _self.state.columns;
+        console.log('--------------------------------------------------------order render--------------------------------------------');
+        var header =  _self.getHeader();
+            // var header = _self.state.header;
         var columns = _self.getColumn();
+            // var columns = _self.state.columns;
         var data =    _self.state.data;
-        var pagination = this.state.pagination;
+        var pagination = _self.state.pagination;
 
-        if (this.state.search.query) {
+        if (_self.state.search.query) {
             data = Search.search(
                 data,
                 columns,
-                this.state.search.column,
-                this.state.search.query
+                _self.state.search.column,
+                _self.state.search.query
             );
         }
+        console.log('sortingcolumn=',_self.state.sortingColumn,_self.state);
 
-        data = sortColumn.sort(data, this.state.sortingColumn);
+        data = sortColumn.sort(data, _self.state.sortingColumn);
         var paginated = Paginator.paginate(data, pagination);
 
         return (
@@ -381,11 +406,11 @@ module.exports = React.createClass({
                      <Overlay ref="overay" />
                      <div className='controls'>
                         <div className='per-page-container'>
-                            Per page <input type='text' defaultValue={pagination.perPage} onChange={this.onPerPage}></input>
-                            <input type="button" name="btnAdd" value="AddItem" onClick={this._Additem} />
+                            Per page <input type='text' defaultValue={pagination.perPage} onChange={_self.onPerPage}></input>
+                            <input type="button" name="btnAdd" value="AddItem" onClick={_self._Additem} />
                         </div>
                         <div className='search-container'>
-                            Search <Search columns={columns} data={this.state.data} onChange={this.onSearch} />
+                            Search <Search columns={columns} data={_self.state.data} onChange={_self.onSearch} />
                         </div>
                     </div>
                       <Table
@@ -432,27 +457,27 @@ module.exports = React.createClass({
                             pages={paginated.amount}
                             beginPages={3}
                             endPages={3}
-                            onSelect={this.onSelect} />
+                            onSelect={_self.onSelect} />
                     </div>
                 </div>
-                 <SkyLight ref='modal' title={this.state.modal.title} > <Frmedit parent={_self} content={this.state.modal.content}  /> 
+                 <SkyLight ref='modal' title={_self.state.modal.title} > <Frmedit parent={_self} content={_self.state.modal.content}  /> 
                         {/* this.state.modal.content */ }
                  </SkyLight>
                 <Modalx
-                   isOpen={this.state.modalIsOpen}
+                   isOpen={_self.state.modalIsOpen}
                    style={customStyles}
-                   onRequestClose={this.closeModal} >
+                   onRequestClose={_self.closeModal} >
                   <h1>Modal Content</h1>
                   <p>Etc.</p>
                   <h2>Hello</h2>
-                  <button onClick={this.closeModal}>close</button>
+                  <button onClick={_self.closeModal}>close</button>
                   <div>I am a modal</div>
                   <form>
                     <input />
                     <button>tab navigation</button>
                     <button>stays</button>
                     <button>inside</button>
-                    <button onClick={this.deleteitem}>DEL</button>
+                    <button onClick={_self.deleteitem}>DEL</button>
                   </form>
                 </Modalx>
                     </div>

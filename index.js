@@ -15,10 +15,6 @@ import LoginStore from './store/loginstore';
 import { Mike,Overlay,Footer,Raph,Donnie }  from './components/common';
 import $ from 'jquery';
 
-import OrderActons  from './actions/orderaction';
-import OrderStore from './store/orderstore';
-
-
 var tabList = [
         { 'id': 1, 'name': 'Order',    'url': '#' , 'i':'glyphicon glyphicon-apple'   ,'type':'tab'},
         { 'id': 2, 'name': 'Approve',  'url': '#' , 'i':'glyphicon glyphicon-bitcoin'   ,'type':'tab'},
@@ -110,7 +106,7 @@ var tabList = [
     var Tab = React.createClass({
       handleClick: function(e){
         e.preventDefault();
-        console.log('y/n=',$(".navbar-toggle").attr("aria-expanded"));
+        // console.log('y/n=',$(".navbar-toggle").attr("aria-expanded"));
         if( $(".navbar-toggle").attr("aria-expanded")== 'true') {
           $('.navbar-toggle').click();
         }
@@ -171,7 +167,6 @@ var tabList = [
     var RNav = React.createClass({
      handleClick: function(tab){
           if(tab.id === 12 ){
-             console.log('tab====12');
              LoginActons.getLogout();
           } else {
             this.props.changeTab(tab);
@@ -217,7 +212,7 @@ var tabList = [
     var Brand = React.createClass({
       Alertfnc:function(){
         // alert('ForcastApp');
-        console.log('ForcastApp');
+        // console.log('ForcastApp');
       },
       render: function() {
         return (
@@ -241,7 +236,7 @@ var tabList = [
           LoginActons.getLogout();
       },
       render: function() {
-        console.log('userbrand=',this.props);
+        // console.log('userbrand=',this.props);
         if(this.props.user.name == '') {
            this.props.user.name = 'UserName';
         }
@@ -267,11 +262,11 @@ var tabList = [
     var Content = React.createClass({
         render: function(){
             let _this = this;
-            console.log('current tab =',this.props.currentTab);
-            console.log('props in Content = ',_this.props);
+            // console.log('current tab =',this.props.currentTab);
+            // console.log('props in Content = ',_this.props);
                 return(
                         <div className="tab-content">
-                            { this.props.currentTab === 1   ? <Order  test="test"  datasources={_this.props.datasources}   className="tab-pane" />  :null}
+                            { this.props.currentTab === 1   ? <Order  className="tab-pane" />  :null}
                             { this.props.currentTab === 2   ? <Approve    className="tab-pane" />  :null}
                             { this.props.currentTab === 3   ? <Sale       className="tab-pane" />  :null}
                             { this.props.currentTab === 4   ? <Product    className="tab-pane" />  :null}
@@ -297,7 +292,7 @@ var tabList = [
 
 
    var App = React.createClass({
-      mixins:[Reflux.listenTo(LoginStore,'onStore'),Reflux.listenTo(OrderStore,'onOrderStore')],
+      mixins:[Reflux.listenTo(LoginStore,'onStore')],
       getInitialState: function () {        
           return {
               tabList: tabList,
@@ -315,7 +310,7 @@ var tabList = [
           };
       },
       onStore:function(data) {
-         console.log('data=',data);
+         // console.log('data=',data);
          this.setState({user:data});
       },
       onOrderStore:function(data){
@@ -323,16 +318,16 @@ var tabList = [
          // this.setState({datasources:data,data:data});
       },
       componentDidMount: function() {
-         console.log('didMount');
+         // console.log('didMount');
          let _this = this;
          setTimeout(function(){
            $(ReactDOM.findDOMNode(_this.refs.modal)).hide();
-           console.log('hide');
+           // console.log('hide');
          },1000);
          
       },
       componentWillMount() {
-         console.log('winmonth');
+         // console.log('winmonth');
          let _this = this;
          $.ajax({
            url: 'http://127.0.0.1:8000/services/LoginService.php/chklogin',
@@ -341,7 +336,7 @@ var tabList = [
            data: {},
          })
          .done(function(data) {
-           console.log("success",data);
+           // console.log("success",data);
            _this.state.user.name = data.data.name;
            _this.state.user.type = data.data.type;
            _this.state.user.email = data.data.email;
@@ -349,27 +344,27 @@ var tabList = [
            _this.setState({user:_this.state.user});
          })
          .fail(function() {
-           console.log("error");
+           // console.log("error");
          })
          .always(function() {
-           console.log("complete");
+           // console.log("complete");
          });
       },
       componentDidUpdate: function(prevProps, prevState) {
-         console.log('update');
+         // console.log('update');
          let _this = this;
          setTimeout(function(){
            $(ReactDOM.findDOMNode(_this.refs.modal)).hide();
-           console.log('hide');
+           // console.log('hide');
          },1000);
       },
       dorpdownTab:function(tab,item){
-          console.log('dropdown tab=',tab.id);
+          // console.log('dropdown tab=',tab.id);
           this.setState({ currentTab: tab.id ,currentContent:item.id });
 
       },
       changeTab: function(tab) {
-          console.log('tab=',tab.id);
+          // console.log('tab=',tab.id);
           this.setState({ currentTab: tab.id ,currentContent:tab.id});
       },
       renderLogin:function(){
@@ -416,13 +411,13 @@ var tabList = [
         );
       },
       render: function() {
-        console.log('thisstate=',this.state);
-        console.log('currentTab  = 12 y/n =',this.state);
+        // console.log('thisstate=',this.state);
+        // console.log('currentTab  = 12 y/n =',this.state);
         if(this.state.user.name != ''){
-          console.log('main')
+          // console.log('main')
           return  this.renderMain();          
         } else {
-          console.log('login')
+          // console.log('login')
           return  this.renderLogin();
         }
       }
