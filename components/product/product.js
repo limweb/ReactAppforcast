@@ -1,6 +1,17 @@
 import React  from 'react';
+import Reflux  from 'reflux';
+import { ProductActions, ProductStore } from '../../store/productstore';
 
 var Product = React.createClass( {
+  mixins:[Reflux.listenTo(ProductStore,'onStore')],
+  onStore:function(data) {
+    this.setState({
+     product:data 
+    });
+  },
+  componentDidMount: function() {
+    ProductActions.getProducts();
+  },
   render: function () {
     return (
     <div>

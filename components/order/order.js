@@ -215,19 +215,19 @@ module.exports = React.createClass({
         if(_self.state.columns) {
             return _self.state.columns;
         } else {
-
-
         return [
                     {
                         property: 'id',
                         header:   'ID',
                         width:100,
                         classes:'cid',
+                        search:false,
                     },
                     {
                         property: 'approve_id',
                         header:   'Approve_id',
                         width:400,
+                        search:false,
                         cell:[ 
                             editable({
                                 editor:editors.dropdown(datasources.approves,{name:'name',value:'id'}),
@@ -248,6 +248,7 @@ module.exports = React.createClass({
                         property: 'order_id',
                         header:   'Order Id',
                         width:400,
+                        search:false,
                         cell:[
                             editable({
                                 editor:editors.dropdown(_self.dropdownOrder(),{value:'id',name:'name'}),
@@ -271,6 +272,7 @@ module.exports = React.createClass({
                     {
                         property: 'name',
                         header:   'Name',
+                        search: true,
                         width:400,
                         cell:[
                             editable({
@@ -283,6 +285,7 @@ module.exports = React.createClass({
                         property: 'supplier',
                         header:  'Supplier',
                         width:400,
+                        search: true,
                         cell:[
                         editable({editor: editors.input(),}), 
                         highlighter('supplier')
@@ -292,6 +295,7 @@ module.exports = React.createClass({
                         property: 'status',
                         header:   'Status',
                         width:100,
+                        search: false,
                         cell:[ 
                         editable({editor:editors.boolean()}),
                         (status) => status ? <span>&#10003;</span> : <span>x</span>,]
@@ -300,23 +304,28 @@ module.exports = React.createClass({
                         property: 'created_at',
                         header:   'Created At',
                         width:400,
+                        search: false,
                     },
                     {
                         property: 'created_by',
                         header:   'Created By',
+                        search: false,
                         width:400,
                     },
                     {  
                         property: 'updated_at',
                         header:   'Updated At',
+                        search: false,
                         width:400,
                     },
                     {
                         property: 'updated_by',
                         header:   'Updated By',
+                        search: false,
                         width:400,
                     },
                     {   header: 'Action',
+                        search: false,
                         cell:[ 
                             function(value, celldata, rowIndex) {
                                 var idx = findIndex(_self.state.data, {
@@ -373,9 +382,7 @@ module.exports = React.createClass({
         let _self = this;
         console.log('--------------------------------------------------------order render--------------------------------------------');
         var header =  _self.getHeader();
-            // var header = _self.state.header;
         var columns = _self.getColumn();
-            // var columns = _self.state.columns;
         var data =    _self.state.data;
         var pagination = _self.state.pagination;
 
@@ -387,8 +394,6 @@ module.exports = React.createClass({
                 _self.state.search.query
             );
         }
-        console.log('sortingcolumn=',_self.state.sortingColumn,_self.state);
-
         data = sortColumn.sort(data, _self.state.sortingColumn);
         var paginated = Paginator.paginate(data, pagination);
 

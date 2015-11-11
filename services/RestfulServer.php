@@ -108,10 +108,10 @@ class RestfulServer {
 
         protected function makeModel(){
             $this->model = $this->model();
-            if($this->model){
-                $this->index = $this->model->find($this->indexid);  // index if 
-                $this->mainpage = $this->model->find($this->pageid);
-            }
+            // if($this->model){
+            //     $this->index = $this->model->find($this->indexid);  // index if 
+            //     $this->mainpage = $this->model->find($this->pageid);
+            // }
         }
 
         public  function __destruct() {
@@ -451,19 +451,20 @@ class RestfulServer {
         }
 
         public function index()  {  
-            // if($this->model){
-            //     (!$this->format ? $this->format = 'json' : null);
-            //     $this->response($this->all());
-            // }
+            if($this->model){
+                (!$this->format ? $this->format = 'json' : null);
+                $this->response($this->all());
+            }
         }
         // public function create(){}
         public function store(){}
-        // public function show($id){
-        //     if($this->model) {
-        //         (!$this->format ? $this->format = 'json' : null);
-        //         $this->response($this->find($id));
-        //     }
-        // }
+
+        public function show($id){
+            if($this->model) {
+                (!$this->format ? $this->format = 'json' : null);
+                $this->response($this->find($id));
+            }
+        }
 
         public function edit($id){ }
         // public function update($id){}
@@ -497,9 +498,9 @@ class RestfulServer {
         //  * @param array $columns
         //  * @return mixed
         //  */
-        // public function all($columns = array('*')) {
-        //     return $this->model->get($columns);
-        // }
+        public function all($columns = array('*')) {
+            return $this->model->get($columns);
+        }
 
         // /**
         //  * @param  string $value
@@ -554,14 +555,14 @@ class RestfulServer {
         //     }
         // }
 
-        // /**
-        //  * @param $id
-        //  * @param array $columns
-        //  * @return mixed
-        //  */
-        // public function find($id, $columns = array('*')) {
-        //     return $this->model->find($id, $columns);
-        // }
+        /**
+         * @param $id
+         * @param array $columns
+         * @return mixed
+         */
+        public function find($id, $columns = array('*')) {
+            return $this->model->find($id, $columns);
+        }
 
         // /**
         //  * @param $attribute

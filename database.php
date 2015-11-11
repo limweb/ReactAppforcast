@@ -20,7 +20,7 @@ $capsule->setEventDispatcher(new Dispatcher(new Container));
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
-class Order extends Illuminate\Database\Eloquent\Model {
+class Order extends Illuminate\Database\Eloquent\Model { 
     protected $table = 'orders';
     protected $fllable = [];
     protected $guarded =['id'];
@@ -29,13 +29,6 @@ class Order extends Illuminate\Database\Eloquent\Model {
 
 class Product extends Illuminate\Database\Eloquent\Model {
     protected $table = 'products';
-    protected $fllable = [];
-    protected $guarded =['id'];
-
-}
-
-class Productx extends Illuminate\Database\Eloquent\Model {
-    protected $table = 'productx';
     protected $fllable = [];
     protected $guarded =['id'];
 

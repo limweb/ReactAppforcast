@@ -28,16 +28,16 @@ var OrderStore = Reflux.createStore({
            this.orders = datasources;
            console.log('orders=',this.orders);
            this.trigger(this.orders);
-	},
-	onUpdateOrder:function(orderitem){
-		return this.orders;
-	},
-	onAddOrder:function(orderitem){
-		return this.orders;
-	},
-	onDelOrder:function(idx){
-		return this.orders;
-	},
-});
+       },
+       onUpdateOrder:function(orderitem){
+       	return this.orders;
+       },
+       onAddOrder:function(orderitem){
+       	return this.orders;
+       },
+       onDelOrder:function(idx){
+       	return this.orders;
+       },
+   });
 
 export default OrderStore;
