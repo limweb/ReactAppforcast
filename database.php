@@ -1,6 +1,17 @@
 <?php 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// // error_reporting(E_ALL);
+// error_reporting(0);
+// // ignore_user_abort(1);
+// ignore_user_abort(0);
+// set_time_limit(500);
+// ini_set('upload_max_filesize', '10M');
+// ini_set('post_max_size', '10M');
+// ini_set('max_input_time', 500);
+// ini_set('max_execution_time', 500);
+// // ini_set("display_errors", 1);
+// ini_set("memory_limit",-1);
+
+
 require_once __DIR__.'/vendor/autoload.php';
 use Illuminate\Database\Capsule\Manager as Capsule;
 $capsule = new Capsule;
@@ -66,6 +77,17 @@ class Sale extends Illuminate\Database\Eloquent\Model {
     protected $table = 'sales';
     protected $fllable = [];
     protected $guarded =['id'];
+
+}
+
+class Menu extends Illuminate\Database\Eloquent\Model {
+    protected $table = 'menus';
+    protected $fllable = [];
+    protected $guarded =['id'];
+
+    public function dorpdownlist(){
+        return $this->hasMany('Menu','parent','id')->where('type','dropdownlist');
+    }
 
 }
 

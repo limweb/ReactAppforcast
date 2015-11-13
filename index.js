@@ -14,30 +14,34 @@ import Setting from './components/setting';
 import Login from './components/login';
 import LoginActons  from './actions/loginaction';
 import LoginStore from './store/loginstore';
+import appcfg from './appcfg';
+
+import { AppActions, AppStore } from './store/appstore';
+
 import { Mike,Overlay,Footer,Raph,Donnie }  from './components/common';
 import $ from 'jquery';
 
-var tabList = [
-        { 'id': 1, 'name': 'Order',    'url': '#' , 'i':'glyphicon glyphicon-apple'   ,'type':'tab'},
-        { 'id': 2, 'name': 'Approve',  'url': '#' , 'i':'glyphicon glyphicon-bitcoin'   ,'type':'tab'},
-        { 'id': 3, 'name': 'Sale',     'url': '#' , 'i':'glyphicon glyphicon-lamp'   ,'type':'tab'},
-        { 'id': 4, 'name': 'Product',  'url': '#' , 'i':'glyphicon glyphicon-yen'   ,'type':'tab'},
-        { 'id': 5, 'name': 'Forcast',  'url': '#' , 'i':'glyphicon glyphicon-grain'   ,'type':'tab'},
-        { 'id': 6, 'name': 'Reports',  'url': '#' , 'i':'glyphicon glyphicon-sunglasses'   ,'type':'tab'},
-    ];
+// var tabList = [
+//         { 'id': 1, 'name': 'Order',    'url': '#' , 'i':'glyphicon glyphicon-apple'   ,'type':'tab'},
+//         { 'id': 2, 'name': 'Approve',  'url': '#' , 'i':'glyphicon glyphicon-bitcoin'   ,'type':'tab'},
+//         { 'id': 3, 'name': 'Sale',     'url': '#' , 'i':'glyphicon glyphicon-lamp'   ,'type':'tab'},
+//         { 'id': 4, 'name': 'Product',  'url': '#' , 'i':'glyphicon glyphicon-yen'   ,'type':'tab'},
+//         { 'id': 5, 'name': 'Forcast',  'url': '#' , 'i':'glyphicon glyphicon-grain'   ,'type':'tab'},
+//         { 'id': 6, 'name': 'Reports',  'url': '#' , 'i':'glyphicon glyphicon-sunglasses'   ,'type':'tab'},
+//     ];
 
- var tabListr = [
-          { 'id':13,  'name': 'Setting',                  'url': '#', 'role':'' ,        'i':'fa fa-cog', 'type':'dropdown' , 'dropdownlist': [
-          { 'id':20 , 'name': 'Action1' ,                 'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-          { 'id':21 , 'name': 'Another action' ,          'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-          { 'id':22 , 'name': 'Something else here' ,     'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-          { 'id':23 , 'name': '' ,                        'url':'#' , 'role':'separator', 'i':'fa fa-cog', 'class':'divider' },
-          { 'id':24 , 'name': 'Separated link' ,          'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-          { 'id':26 , 'name': '' ,                        'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'divider' },
-          { 'id':25 , 'name': 'One more separated link' , 'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-          { 'id':27 , 'name': 'Test' ,                    'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' }
-                                                             ]},
-        ];
+//  var tabListr = [
+//           { 'id':13,  'name': 'Setting',                  'url': '#', 'role':'' ,        'i':'fa fa-cog', 'type':'dropdown' , 'dropdownlist': [
+//           { 'id':20 , 'name': 'Action1' ,                 'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
+//           { 'id':21 , 'name': 'Another action' ,          'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
+//           { 'id':22 , 'name': 'Something else here' ,     'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
+//           { 'id':23 , 'name': '' ,                        'url':'#' , 'role':'separator', 'i':'fa fa-cog', 'class':'divider' },
+//           { 'id':24 , 'name': 'Separated link' ,          'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
+//           { 'id':26 , 'name': '' ,                        'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'divider' },
+//           { 'id':25 , 'name': 'One more separated link' , 'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
+//           { 'id':27 , 'name': 'Test' ,                    'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' }
+//                                                              ]},
+//         ];
   
     var DropdownItem = React.createClass({
       handleClick: function(e,f){
@@ -48,6 +52,8 @@ var tabList = [
         let _self = this;
         var tab = this.props.tab;
         var i = '';
+        if(tab){
+
         return (
                <ul className="dropdown-menu">
                   { tab.map(function(item){
@@ -63,6 +69,9 @@ var tabList = [
                   })}
               </ul>
         );
+      } else {
+        return (<ul></ul>);
+      }
       }
     });
 
@@ -130,40 +139,58 @@ var tabList = [
 
 
     var LNav = React.createClass({
+      getDefaultProps: function() {
+        return {
+          tabList: [],
+        };
+      },
       handleClick: function(tab){
           this.props.changeTab(tab);
       },    
       render: function() {
         let _self = this;
+        console.log('LNAV=',_self.props.tabList);
+        if(_self.props.tabList) {
         return (
             <div>
               <ul className="nav navbar-nav">
-                 { this.props.tabList.map(function(tab) { 
+                 { 
+
+                  _self.props.tabList.map(function(tab) { 
+                    console.log('tab=',tab);
                     if(tab.type == 'tab'){
-                       return (<Tab handleClick={this.handleClick.bind(this, tab)}
-                                    key={tab.id}
-                                    url={tab.url}
-                                    name={tab.name}
-                                    c = {tab.class}
-                                    i = {tab.i}
-                                    isCurrent={(this.props.currentTab === tab.id)}
+                        console.log('tab.id=',tab.id);
+                        return (<Tab handleClick={_self.handleClick.bind(_self, tab)}
+                                      key={tab.id}
+                                      url={tab.url}
+                                      name={tab.name}
+                                      c = {tab.class}
+                                      i = {tab.i}
+                                      isCurrent={(_self.props.currentTab === tab.id)}
+                            />)
+                    } else {
+                          return (<Dropdown handleClick={_self.handleClick}
+                                        key={tab.id}
+                                        url={tab.url}
+                                        name={tab.name}
+                                        dropdownlist={tab.dropdownlist}
+                                        c = {tab.class}
+                                        i = {tab.i}
+                                        isCurrent={(_self.props.currentTab === tab.id)}
                           />)
-                     } else {
-                      return (<Dropdown handleClick={_self.handleClick}
-                                    key={tab.id}
-                                    url={tab.url}
-                                    name={tab.name}
-                                    dropdownlist={tab.dropdownlist}
-                                    c = {tab.class}
-                                    i = {tab.i}
-                                    isCurrent={(this.props.currentTab === tab.id)}
-                      />)
-                     }
-                 }.bind(this))}
+                    }
+                 }.bind(_self))
+
+               }
               </ul>            
             </div>
-        )
-      }
+        ); // return
+        } else {
+          return (<div></div>);  
+        }
+
+      } // render 
+
     });
 
     var RNav = React.createClass({
@@ -179,6 +206,8 @@ var tabList = [
       },
       render: function() {
         let _self = this;
+        if(_self.props.tabList) {
+
         return (
             <div>
               <ul className="nav navbar-nav navbar-right">
@@ -208,6 +237,9 @@ var tabList = [
               </ul> 
             </div>
         );
+      } else {
+        return (<div></div>);
+      }
       }
     });
 
@@ -264,7 +296,7 @@ var tabList = [
     var Content = React.createClass({
         render: function(){
             let _this = this;
-            // console.log('current tab =',this.props.currentTab);
+            console.log('current tab =',this.props.currentTab);
             // console.log('props in Content = ',_this.props);
                 return(
                         <div className="tab-content">
@@ -294,13 +326,23 @@ var tabList = [
 
 
    var App = React.createClass({
-      mixins:[Reflux.listenTo(LoginStore,'onStore')],
+      mixins:[  Reflux.listenTo(LoginStore,'onStore'),Reflux.listenTo(AppStore,'onConfig') ],
+      onConfig:function(data) {
+        console.log('---onConfig=',data,'---------------------------------------');
+        this.setState({
+           tabList: data.tabList,
+           tabListr: data.tabListr,
+           currentTab: data.tabList[0].id,
+           currentContent: data.tabList[0].id,
+         });
+      },
       getInitialState: function () {        
           return {
-              tabList: tabList,
-              tabListr: tabListr,
-              currentTab: 1,
-              currentContent:1,
+              app:null,
+              tabList: null,
+              tabListr: null,
+              currentTab: null,
+              currentContent:null,
               loginted:1,
               datasources:null,
               user:{
@@ -312,12 +354,9 @@ var tabList = [
           };
       },
       onStore:function(data) {
-         // console.log('data=',data);
+         console.log(' ======================================== onStore data=',data);
+         AppActions.getConfig();
          this.setState({user:data});
-      },
-      onOrderStore:function(data){
-         // console.log('onOrderStore',data);
-         // this.setState({datasources:data,data:data});
       },
       componentDidMount: function() {
          // console.log('didMount');
@@ -332,7 +371,7 @@ var tabList = [
          // console.log('winmonth');
          let _this = this;
          $.ajax({
-           url: 'http://127.0.0.1:8000/services/LoginService.php/chklogin',
+           url:  appcfg.host + '/services/LoginService.php/chklogin',
            type: 'POST',
            dataType: 'json',
            data: {},
@@ -344,6 +383,7 @@ var tabList = [
            _this.state.user.email = data.data.email;
            _this.state.user.img = data.data.img;
            _this.setState({user:_this.state.user});
+           AppActions.getConfig();
          })
          .fail(function() {
            // console.log("error");
@@ -413,8 +453,9 @@ var tabList = [
         );
       },
       render: function() {
-        // console.log('thisstate=',this.state);
-        // console.log('currentTab  = 12 y/n =',this.state);
+        console.log('thisstate=',this.state);
+        console.log('currentTab  = 12 y/n =',this.state);
+        // return  this.renderMain();          
         if(this.state.user.name != ''){
           // console.log('main')
           return  this.renderMain();          
