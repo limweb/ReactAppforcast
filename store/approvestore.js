@@ -3,28 +3,31 @@ import Reflux from 'reflux';
 import $ from  'jquery';
 import appcfg  from '../appcfg';
 
-var ApproveActons = Reflux.createActions([
+
+var approveActions = Reflux.createActions([
 	'getApproves',
 	'updateApprove',
 	'addApprove',
 	'delApprove',
 	]);
 
-var ApproveStore = Reflux.createStore({
-	"approves":[],
-	listenables:[ApproveActons],
+var approveStore = Reflux.createStore({
+	approves:[],
+	listenables:[approveActions],
 	onGetApproves:function(){
+		console.log('ApproveAction.getApproves');
 		$.ajax({
 			url: appcfg.host + '/services/ApproveService.php',
-			type: 'POST',
+			type: 'GET',
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
 			}.bind(this),
 
 			success: function(data, textStatus, xhr) {
+			    this.approves = data.data;
 				this.trigger(this.approves);
-				console.log("success",approves);
+				console.log("success",this.approves);
 			}.bind(this),
 
 			error: function(xhr, textStatus, errorThrown) {
@@ -43,7 +46,7 @@ var ApproveStore = Reflux.createStore({
 
 			success: function(data, textStatus, xhr) {
 				this.trigger(this.approves);
-				console.log("success",approves);
+				console.log("success",this.approves);
 			}.bind(this),
 
 			error: function(xhr, textStatus, errorThrown) {
@@ -93,6 +96,6 @@ var ApproveStore = Reflux.createStore({
 
 
 module.exports = {
-	ApproveActions: ApproveActions,
-	ApproveStore: ApproveStore
+	ApproveActions: approveActions,
+	ApproveStore: approveStore
 }

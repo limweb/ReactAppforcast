@@ -7,9 +7,18 @@ class  ApproveService extends RestfulServer {
 			parent::__construct();
 		}
 
-		// public function index(){
-		// 	echo 'ApproveService';
-		// }
+		public function index(){
+			if($this->model){
+                (!$this->format ? $this->format = 'json' : null);
+				$columns = TColumn::where('table','approve')->get();
+				$data = $this->model->get();
+					$o = new stdClass();
+					$o->columns = $columns;
+					$o->data = $data;
+				$this->response($o);
+			}
+		}
+
 		public function Model()  {
 			return new Approve();
 		}

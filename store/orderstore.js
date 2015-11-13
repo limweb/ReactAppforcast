@@ -1,43 +1,107 @@
+'use strict';
 import Reflux from 'reflux';
-import OrderActons from '../actions/orderaction';
 import $ from  'jquery';
-import datasources  from '../components/configs'
+import appcfg  from '../appcfg';
+// import { OrderActions, OrderStore } from './store/orderstore';
+// mixins:[Reflux.listenTo(OrderStore,'onStore')],
+// onStore:function(data) {
+// 	 this.setState({
+//  	order:data 
+//   });
+// },
 
-var OrderStore = Reflux.createStore({
-	"orders":[],
-	listenables:[OrderActons],
+
+var orderActions = Reflux.createActions([
+	'getOrders',
+	'updateOrder',
+	'addOrder',
+	'delOrder',
+	]);
+
+var orderStore = Reflux.createStore({
+	orders:[],
+	listenables:[orderActions],
 	onGetOrders:function(){
-		// $.ajax({
-		// 	url: 'http://127.0.0.1:8000/services/LoginService.php/logout',
-		// 	type: 'POST',
-		// 	dataType: 'json',
-		// 	data: {},
-		// complete: function(xhr, textStatus) {
-  //           //called when complete
-  //           console.log('complete');
-  //       }.bind(this),
-  //       success: function(data, textStatus, xhr) {
-  //       	this.trigger(this.orders);
-  //       	console.log("success",data);
-  //       }.bind(this),
-  //       error: function(xhr, textStatus, errorThrown) {
-  //       	console.log('error',xhr,textStatus,errorThrown);
-  //       }.bind(this)
-    // });	
-           // this.orders = datasources.products;
-           this.orders = datasources;
-           console.log('orders=',this.orders);
-           this.trigger(this.orders);
-       },
-       onUpdateOrder:function(orderitem){
-       	return this.orders;
-       },
-       onAddOrder:function(orderitem){
-       	return this.orders;
-       },
-       onDelOrder:function(idx){
-       	return this.orders;
-       },
-   });
+		$.ajax({
+			url: appcfg.host + '/services/OrderService.php',
+			type: 'GET',
+			dataType: 'json',
+			complete: function(xhr, textStatus) {
+				console.log('complete');
+			}.bind(this),
 
-export default OrderStore;
+			success: function(data, textStatus, xhr) {
+			    this.orders = data.data;
+				this.trigger(this.orders);
+				console.log("success",this.orders);
+			}.bind(this),
+
+			error: function(xhr, textStatus, errorThrown) {
+				console.log('error',xhr,textStatus,errorThrown);
+			}.bind(this)
+		});	
+	},
+	onUpdateOrder:function(){
+		$.ajax({
+			url: appcfg.host + '/services/OrderService.php',
+			type: 'PUT',
+			dataType: 'json',
+			complete: function(xhr, textStatus) {
+				console.log('complete');
+			}.bind(this),
+
+			success: function(data, textStatus, xhr) {
+				this.trigger(this.orders);
+				console.log("success",this.orders);
+			}.bind(this),
+
+			error: function(xhr, textStatus, errorThrown) {
+				console.log('error',xhr,textStatus,errorThrown);
+			}.bind(this)
+		});	
+	},
+	onAddOrder:function(){
+		$.ajax({
+			url: appcfg.host + '/services/OrderService.php',
+			type: 'POST',
+			dataType: 'json',
+			complete: function(xhr, textStatus) {
+				console.log('complete');
+			}.bind(this),
+
+			success: function(data, textStatus, xhr) {
+				this.trigger(this.orders);
+				console.log("success",orders);
+			}.bind(this),
+
+			error: function(xhr, textStatus, errorThrown) {
+				console.log('error',xhr,textStatus,errorThrown);
+			}.bind(this)
+		});			
+	},
+	onDelOrder:function(idx){
+		$.ajax({
+			url: appcfg.host + '/services/OrderService.php/'+idx,
+			type: 'DELETE',
+			dataType: 'json',
+			complete: function(xhr, textStatus) {
+				console.log('complete');
+			}.bind(this),
+
+			success: function(data, textStatus, xhr) {
+				this.trigger(this.orders);
+				console.log("success",orders);
+			}.bind(this),
+
+			error: function(xhr, textStatus, errorThrown) {
+				console.log('error',xhr,textStatus,errorThrown);
+			}.bind(this)
+		});				
+	}
+});
+
+
+module.exports = {
+	OrderActions: orderActions,
+	OrderStore: orderStore
+}

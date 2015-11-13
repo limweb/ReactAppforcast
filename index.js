@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Reflux  from 'reflux';
 import Order  from './components/order/order';
-import Approve from './components/approve';
+import Approve from './components/approve/approve';
 // import Sale  from './components/sale';
 import Sale  from './components/sale/sale';
 // import Product  from './components/product';
@@ -21,28 +21,7 @@ import { AppActions, AppStore } from './store/appstore';
 import { Mike,Overlay,Footer,Raph,Donnie }  from './components/common';
 import $ from 'jquery';
 
-// var tabList = [
-//         { 'id': 1, 'name': 'Order',    'url': '#' , 'i':'glyphicon glyphicon-apple'   ,'type':'tab'},
-//         { 'id': 2, 'name': 'Approve',  'url': '#' , 'i':'glyphicon glyphicon-bitcoin'   ,'type':'tab'},
-//         { 'id': 3, 'name': 'Sale',     'url': '#' , 'i':'glyphicon glyphicon-lamp'   ,'type':'tab'},
-//         { 'id': 4, 'name': 'Product',  'url': '#' , 'i':'glyphicon glyphicon-yen'   ,'type':'tab'},
-//         { 'id': 5, 'name': 'Forcast',  'url': '#' , 'i':'glyphicon glyphicon-grain'   ,'type':'tab'},
-//         { 'id': 6, 'name': 'Reports',  'url': '#' , 'i':'glyphicon glyphicon-sunglasses'   ,'type':'tab'},
-//     ];
-
-//  var tabListr = [
-//           { 'id':13,  'name': 'Setting',                  'url': '#', 'role':'' ,        'i':'fa fa-cog', 'type':'dropdown' , 'dropdownlist': [
-//           { 'id':20 , 'name': 'Action1' ,                 'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-//           { 'id':21 , 'name': 'Another action' ,          'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-//           { 'id':22 , 'name': 'Something else here' ,     'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-//           { 'id':23 , 'name': '' ,                        'url':'#' , 'role':'separator', 'i':'fa fa-cog', 'class':'divider' },
-//           { 'id':24 , 'name': 'Separated link' ,          'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-//           { 'id':26 , 'name': '' ,                        'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'divider' },
-//           { 'id':25 , 'name': 'One more separated link' , 'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' },
-//           { 'id':27 , 'name': 'Test' ,                    'url':'#' , 'role':'' ,         'i':'fa fa-cog', 'class':'' }
-//                                                              ]},
-//         ];
-  
+ 
     var DropdownItem = React.createClass({
       handleClick: function(e,f){
        let _self = this;
@@ -258,7 +237,7 @@ import $ from 'jquery';
                 <span className="icon-bar"></span>
                 <span className="icon-bar"></span>
               </button>
-              <a onClick={this.Alertfnc} className="navbar-brand" href="#">BRAND</a>
+              <a onClick={this.Alertfnc} className="navbar-brand" href="#">FORCAST</a>
             </div>    
           </div>
         );

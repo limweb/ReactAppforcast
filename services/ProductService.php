@@ -20,6 +20,23 @@ class  ProductService extends RestfulServer {
 			parent::__construct();
 		}
 
+
+		public function index(){
+			if($this->model){
+                (!$this->format ? $this->format = 'json' : null);
+				$columns = TColumn::where('table','product')->get();
+				$data = $this->model->get();
+					$o = new stdClass();
+					$o->columns = $columns;
+					$o->data = $data;
+				$this->response($o);
+			}
+
+		}
+
+
+
+
 		public function Model(){
 			return new Product();
 		}

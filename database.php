@@ -66,6 +66,13 @@ class App extends Illuminate\Database\Eloquent\Model {
 
 }
 
+class TColumn extends Illuminate\Database\Eloquent\Model {
+    protected $table = 'tbcolumns';
+    protected $fllable = [];
+    protected $guarded =['id'];
+
+}
+
 class Vproduct extends Illuminate\Database\Eloquent\Model {
     protected $table = 'v_products1';
     protected $fllable = [];
