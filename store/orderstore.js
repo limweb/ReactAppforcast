@@ -41,11 +41,13 @@ var orderStore = Reflux.createStore({
 			}.bind(this)
 		});	
 	},
-	onUpdateOrder:function(){
+	onUpdateOrder:function(data){
+		console.log('orderstore updateOrder ----------------------------->',data);
 		$.ajax({
 			url: appcfg.host + '/services/OrderService.php',
 			type: 'PUT',
 			dataType: 'json',
+			data: JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
 			}.bind(this),

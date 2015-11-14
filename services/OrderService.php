@@ -23,6 +23,22 @@ class  OrderService extends RestfulServer {
 		
 		
 		
+		public function update(){
+			consolelog('=================update---------------------------------');
+			consolelog($this->input);
+            (!$this->format ? $this->format = 'json' : null);
+            $order = $this->model->find($this->input->id);
+            if($order) {
+	            $order->name = $this->input->name;
+	            $order->status = $this->input->status;
+	            $rs = $order->save();
+	            consolelog($order);
+					$o = new stdClass();
+					$o->data = $rs;
+				$this->response($o);
+            }
+		}
+
 		public function model() {
           return  new Order();
         }

@@ -341,7 +341,8 @@ import $ from 'jquery';
          // console.log('didMount');
          let _this = this;
          setTimeout(function(){
-           $(ReactDOM.findDOMNode(_this.refs.modal)).hide();
+           $(_this.refs.model).hide();
+           // $(ReactDOM.findDOMNode(_this.refs.modal)).hide();
            // console.log('hide');
          },1000);
          
@@ -375,7 +376,8 @@ import $ from 'jquery';
          // console.log('update');
          let _this = this;
          setTimeout(function(){
-           $(ReactDOM.findDOMNode(_this.refs.modal)).hide();
+           // $(ReactDOM.findDOMNode(_this.refs.modal)).hide();
+           $(_this.refs.model).hide();
            // console.log('hide');
          },1000);
       },

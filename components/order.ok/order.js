@@ -215,6 +215,7 @@ module.exports = React.createClass({
         if(_self.state.columns) {
             return _self.state.columns;
         } else {
+            
         return [
                     {
                         property: 'id',
