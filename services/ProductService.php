@@ -22,18 +22,40 @@ class  ProductService extends RestfulServer {
 
 
 		public function index(){
+
 			if($this->model){
                 (!$this->format ? $this->format = 'json' : null);
 				$columns = TColumn::where('table','product')->get();
+				$approves = Approve::get();
+				$orders = Order::get();
 				$data = $this->model->get();
 					$o = new stdClass();
 					$o->columns = $columns;
 					$o->data = $data;
+					$o->approves = $approves;
+					$o->orders = $orders;
 				$this->response($o);
 			}
 
 		}
 
+
+		public function update(){
+			consolelog($this->input);
+            (!$this->format ? $this->format = 'json' : null);
+            $product = $this->model->find($this->input->id);
+            if($product) {
+	            $product->name = $this->input->name;
+	            $product->order_id = $this->input->order_id;
+	            $product->approve_id = $this->input->approve_id;
+	            $product->supplier = $this->input->supplier;
+	            $product->status = $this->input->status;
+	            $rs = $product->save();
+					$o = new stdClass();
+					$o->data = $rs;
+				$this->response($o);
+            }
+		}
 
 
 

@@ -7,6 +7,11 @@ import Paginator from 'react-pagify';
 import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
 import  Overlay  from '../overlay';
 import _ from 'lodash';
+import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
+import  Form  from 'plexus-form';
+import  FieldWrapper  from './../field_wrapper';
+import  SectionWrapper  from './../section_wrapper';
+import  validate  from 'plexus-validate';
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
@@ -177,6 +182,75 @@ var Sale = React.createClass( {
                         	(status) => status ? <span>&#10003;</span> : <span>x</span>,
                         ]
                     },
+,
+                     {   
+                     header: 'Action',
+                     search: false,
+                     cell:[ 
+                     function(value, celldata, rowIndex) {
+                       var idx = findIndex(_self.state.data, {
+                           id: celldata[rowIndex].id,
+                           });
+
+                       var edit = () => {
+
+                           var schema = {
+                               type: 'object',
+                               properties: properties,
+                        }; //schema
+
+                     _self.setState({
+                       modal: {
+                           title: 'Edit',
+                           content: _self.state.data[idx],
+                           editing:0,
+                           },
+                     });//setState
+                     _self.refs.modal.show();
+                     }; // edit
+
+                     var remove = ()=>{
+                       _self.state.delidx = idx;
+                       console.log('remove click----------------------->');
+                     // <!-- modalIsOpen: true -->
+                     // _self.setState({
+                     //   model: {
+                     //       title: 'Remove Test',
+                     //       content: _self.state.data[idx],
+                     //       editing:2,
+                     //       },
+                     //       });
+                     // _self.refs.modal.show();
+                     if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
+                            console.log("You pressed OK!");
+                            console.log(_self.state.data[idx]);
+                        } else {
+                            console.log("You pressed Cancel!");
+                        }
+
+                     };  // remove  
+
+                     var resetpass = () => {
+                       _self.state.delidx = idx;
+                     if(confirm("Are you sure want to reset this password of! \n"+_self.state.data[idx].name) == true) {
+                            console.log("You pressed OK!");
+                            console.log(_self.state.data[idx]);
+                        } else {
+                            console.log("You pressed Cancel!");
+                        }
+
+                     };
+
+                     return {
+                       value: ( 
+                           <span>
+                           <span title='remove item' className='remove' onClick={remove.bind(_self)} style={{cursor: 'pointer'}}>&#10007;</span>
+                            &nbsp;
+                           <span title='reset password' className='resetpass' onClick={resetpass.bind(_self)} style={{cursor: 'pointer'}}><i className="fa fa-key"></i></span>
+                           </span>
+                     )}; //return 
+                     }.bind(_self),//custom column
+                    ]},                    
         ];
 
         if(_self.state.columns.length > 0 ) {
@@ -244,6 +318,9 @@ var Sale = React.createClass( {
 						</div>
 					</div>
 				</div>
+                <SkyLight ref='modal' title={_self.state.modal.title} >
+                    {_self.state.modal.content}
+                </SkyLight>
 			</div>
 			);
 	},
@@ -257,8 +334,77 @@ var Sale = React.createClass( {
 
 	},
 	_Additem(){
-		let _self = this;
-	},
+        let _self = this;
+        console.log('show modal');
+
+        var properties = {
+            name:{
+                type: 'string'
+            },
+            email:{
+                type: 'string'
+            },
+            username:{
+                type: 'string'
+            },
+            status:{
+                type: 'boolean'
+            },
+        };
+
+        var schema = {
+               type: 'object',
+               properties: properties,
+        }; //schema
+
+        var getButtons = (submit) => {
+            return (
+                <span>
+                    <input type='submit'
+                        className='pure-button pure-button-primary ok-button'
+                        key='ok' value='OK'
+                        onClick={submit} />
+                        <input type='submit' className='pure-button cancel-button'
+                        key='cancel' value='Cancel' onClick={submit} />
+                </span>
+            );
+        };
+
+
+        var onSubmit = (editData, editValue) => {
+                                this.refs.modal.hide();
+                                console.log('onSubmit',editData,editValue);
+                                if(editValue === 'Cancel') {
+                                    console.log('Cancel');
+                                    return;
+                                }
+                                // // this.state.data[idx] = editData;
+                                // this.setState({
+                                //     data: this.state.data
+                                // });
+                            };
+
+
+         _self.setState({
+           modal: {
+               title: 'Add New Sale',
+               content: <Form
+                        className='pure-form pure-form-aligned'
+                        fieldWrapper={FieldWrapper}
+                        sectionWrapper={SectionWrapper}
+                        buttons={getButtons}
+                        schema={schema}
+                        validate={validate}
+                        values={{}}
+                        onSubmit={onSubmit}/>,
+                editing:0,
+               },
+         });//setState
+
+
+
+        _self.refs.modal.show();
+    },
     onSearch(search) {
 		let _self = this;
 	    _self.setState({

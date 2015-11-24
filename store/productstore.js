@@ -21,7 +21,29 @@ var productActions = Reflux.createActions([
 var productStore = Reflux.createStore({
 	products:[],
 	listenables:[productActions],
+	init() {
+		console.log("init----------product store---");
+    	this.resetState();
+    },
+	resetState() {
+		console.log('========= Reset State----------------');
+		this.setState(this.getInitialState());
+	},
+
+	setState(state=undefined) {
+		console.log('========= Set State----------------');
+		if (state) {
+			this.state = state;
+		}
+		this.trigger(this.state);
+	},
+	getInitialState: function() {
+		let _self = this;
+		console.log("-----------------product store-----------------getInitState");
+		return { products: _self.products };
+	},
 	onGetProducts:function(){
+		console.log('product---store----getProducts---------------------->onGetProducts');
 		$.ajax({
 			url: appcfg.host + '/services/ProductService.php',
 			type: 'GET',
@@ -41,11 +63,12 @@ var productStore = Reflux.createStore({
 			}.bind(this)
 		});	
 	},
-	onUpdateProduct:function(){
+	onUpdateProduct:function(data){
 		$.ajax({
 			url: appcfg.host + '/services/ProductService.php',
 			type: 'PUT',
 			dataType: 'json',
+			data:  JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
 			}.bind(this),

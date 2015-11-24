@@ -7,6 +7,12 @@ import Paginator from 'react-pagify';
 import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
 import  Overlay  from '../overlay';
 import _ from 'lodash';
+import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
+import  Form  from 'plexus-form';
+import  FieldWrapper  from './../field_wrapper';
+import  SectionWrapper  from './../section_wrapper';
+import  validate  from 'plexus-validate';
+
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
@@ -14,11 +20,6 @@ let findIndex =  _.findIndex;
 var datasources = {
   data:[],
 };
-
-	
-	
-	
-	
 
 var Order = React.createClass( {
 	mixins:[ Reflux.listenTo(OrderStore,'onStore'),	],
@@ -151,6 +152,63 @@ var Order = React.createClass( {
                         	(status) => status ? <span>&#10003;</span> : <span>x</span>,
                         ]
                     },
+                     {   
+                     header: 'Action',
+                     search: false,
+                     cell:[ 
+                     function(value, celldata, rowIndex) {
+                       var idx = findIndex(_self.state.data, {
+                           id: celldata[rowIndex].id,
+                           });
+
+                       var edit = () => {
+
+                           var schema = {
+                               type: 'object',
+                               properties: properties,
+                        }; //schema
+
+                     _self.setState({
+                       modal: {
+                           title: 'Edit',
+                           content: _self.state.data[idx],
+                           editing:0,
+                           },
+                     });//setState
+                     _self.refs.modal.show();
+                     }; // edit
+
+                     var remove = ()=>{
+                       _self.state.delidx = idx;
+                       console.log('remove click----------------------->');
+                     // <!-- modalIsOpen: true -->
+                     // _self.setState({
+                     //   model: {
+                     //       title: 'Remove Test',
+                     //       content: _self.state.data[idx],
+                     //       editing:2,
+                     //       },
+                     //       });
+                     // _self.refs.modal.show();
+                     if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
+                            console.log("You pressed OK!");
+                            console.log(_self.state.data[idx]);
+                        } else {
+                            console.log("You pressed Cancel!");
+                        }
+
+                     };  // remove               
+                     return {
+                       value: ( 
+                           <span>
+                           <span alt='remove item' className='remove' onClick={remove.bind(_self)} style={{cursor: 'pointer'}}>
+                           &#10007;
+                           </span>
+                           </span>
+                     )}; //return 
+                     }.bind(_self),//custom column
+                    ]},
+
         ];
 
         if(_self.state.columns.length > 0 ) {
@@ -218,6 +276,9 @@ var Order = React.createClass( {
 						</div>
 					</div>
 				</div>
+                <SkyLight ref='modal' title={_self.state.modal.title} >
+                    {_self.state.modal.content}
+                </SkyLight>
 			</div>
 			);
 	},
@@ -232,6 +293,72 @@ var Order = React.createClass( {
 	},
 	_Additem(){
 		let _self = this;
+        console.log('show modal');
+
+        var properties = {
+            // id:{
+            //     type: 'number'
+            // },
+            name:{
+                type: 'string'
+            },
+            status:{
+                type: 'boolean'
+            },
+        };
+
+        var schema = {
+               type: 'object',
+               properties: properties,
+        }; //schema
+
+        var getButtons = (submit) => {
+            return (
+                <span>
+                    <input type='submit'
+                        className='pure-button pure-button-primary ok-button'
+                        key='ok' value='OK'
+                        onClick={submit} />
+                        <input type='submit' className='pure-button cancel-button'
+                        key='cancel' value='Cancel' onClick={submit} />
+                </span>
+            );
+        };
+
+
+        var onSubmit = (editData, editValue) => {
+                                this.refs.modal.hide();
+                                console.log('onSubmit',editData,editValue);
+                                if(editValue === 'Cancel') {
+                                    console.log('Cancel');
+                                    return;
+                                }
+                                // // this.state.data[idx] = editData;
+                                // this.setState({
+                                //     data: this.state.data
+                                // });
+                            };
+
+
+         _self.setState({
+           modal: {
+               title: 'Add New Order',
+               content: <Form
+                        className='pure-form pure-form-aligned'
+                        fieldWrapper={FieldWrapper}
+                        sectionWrapper={SectionWrapper}
+                        buttons={getButtons}
+                        schema={schema}
+                        validate={validate}
+                        values={{}}
+                        onSubmit={onSubmit}/>,
+                editing:0,
+               },
+         });//setState
+
+
+
+        _self.refs.modal.show();
 	},
     onSearch(search) {
 		let _self = this;

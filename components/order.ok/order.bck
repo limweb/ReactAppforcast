@@ -13,7 +13,7 @@ import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no prope
 import  FieldWrapper  from './field_wrapper';
 import  SectionWrapper  from './section_wrapper';
 import  Form  from 'plexus-form';
-import  Validate  from 'plexus-validate';
+import  validate  from 'plexus-validate';
 import  Modalx  from 'react-modal';
 import  Overlay  from './overlay';
 import  Pform  from './frm_product';

@@ -20,6 +20,9 @@ import { AppActions, AppStore } from './store/appstore';
 
 import { Mike,Overlay,Footer,Raph,Donnie }  from './components/common';
 import $ from 'jquery';
+import Modal  from './components/modal';
+import Trigger  from './components/trigger';
+import { OverlayActions, OverlayStore } from './store/overlaystore';
 
  
     var DropdownItem = React.createClass({
@@ -305,7 +308,22 @@ import $ from 'jquery';
 
 
    var App = React.createClass({
-      mixins:[  Reflux.listenTo(LoginStore,'onStore'),Reflux.listenTo(AppStore,'onConfig') ],
+      mixins:[  Reflux.listenTo(LoginStore,'onStore'),Reflux.listenTo(AppStore,'onConfig'),Reflux.listenTo(OverlayStore,'onOverlay')],
+      onOverlay:function(data) {
+        let _self = this;
+        let modal = this.refs.modal;
+        if(data.action == 'show') {
+          console.log('inshow');
+          $(ReactDOM.findDOMNode(modal)).show();
+          if(data.time > 0 ) {
+             setTimeout(function(){
+                $(ReactDOM.findDOMNode(modal)).hide();
+             },data.time);
+          }
+        } else {
+                $(ReactDOM.findDOMNode(modal)).hide();
+        }
+      },
       onConfig:function(data) {
         console.log('---onConfig=',data,'---------------------------------------');
         this.setState({
@@ -315,7 +333,8 @@ import $ from 'jquery';
            currentContent: data.tabList[0].id,
          });
       },
-      getInitialState: function () {        
+      getInitialState: function () {   
+          OverlayActions.showProgress(3000);     
           return {
               app:null,
               tabList: null,
@@ -448,12 +467,34 @@ import $ from 'jquery';
     });
 
     var Apptest = React.createClass({
+      mixins:[Reflux.listenTo(OverlayStore,'onStore')],
+      onStore:function(data) {
+        let _self = this;
+        let modal = this.refs.modal;
+        if(data.action == 'show') {
+          console.log('inshow');
+          $(ReactDOM.findDOMNode(modal)).show();
+          if(data.time > 0 ) {
+             setTimeout(function(){
+                $(ReactDOM.findDOMNode(modal)).hide();
+             },data.time);
+          }
+        } else {
+                $(ReactDOM.findDOMNode(modal)).hide();
+        }
+      },
     	render: function() {
     		return (
-    			<div className="Apptest"><h1>test</h1></div>
+    			<div className="Apptest">
+          <h1>test</h1>
+          <Modal />
+          <Trigger />
+          <Overlay ref="modal" id="overlay" />
+          </div>
     		);
     	}
     });
 
 ReactDOM.render(<App />,document.getElementById('content'));
+// ReactDOM.render(<Apptest />,document.getElementById('content'));
 

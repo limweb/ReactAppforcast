@@ -7,12 +7,21 @@ import Paginator from 'react-pagify';
 import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
 import  Overlay  from '../overlay';
 import _ from 'lodash';
+import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
+import Frmedit  from './editform';
+import  Form  from 'plexus-form';
+import  FieldWrapper  from './../field_wrapper';
+import  SectionWrapper  from './../section_wrapper';
+import  validate  from 'plexus-validate';
+
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
 
 var datasources = {
   data:[],
+  approves:[],
+  orders:[],
 };
 
 
@@ -20,10 +29,12 @@ var Product = React.createClass( {
   mixins:[ Reflux.listenTo(ProductStore,'onStore'),  ],
   onStore:function(data) {
     datasources.data = data.data;
+    datasources.approves = data.approves;
+    datasources.orders = data.orders;
     this.setState({
-      data:data.data,
-            columns: this.getColumn(),
-            header:  this.getHeader(),
+          data:data.data,
+          columns: this.getColumn(),
+          header:  this.getHeader(),
     });
   },
   getDefaultProps() {
@@ -101,7 +112,7 @@ var Product = React.createClass( {
                 id: celldata[rowIndex].id,
             });
             _self.state.data[idx][property] = value;
-      ProductActions.updateProduct(_self.state.data[idx]);
+            ProductActions.updateProduct(_self.state.data[idx]);
             _self.setState({
                 data: datasources.data,
             });
@@ -124,27 +135,50 @@ var Product = React.createClass( {
                         property: 'id',
                         header:  'Id',
                         width:400,
-                        chksearch:false,
+                        chksearch:true,
                         cell:[highlighter('id'),]
                     },
                     {  
                         property: 'order_id',
                         header:  'Order Name',
                         width:400,
-                        chksearch: true,
+                        chksearch: false,
                         cell:[
-                          editable({editor: editors.input(),}),
-                          highlighter('order_id'),
+                          editable({editor:editors.dropdown(datasources.orders,{value:'id',name:'name'}),}),      
+                          function(order_id){
+                                  console.log('-------orderid',order_id,datasources.orders);
+                                   var o = _(datasources.orders).filter(function(order) {
+                                          console.log('----order',order,'-------------------------');
+                                          return order.id == order_id; 
+                                       })
+                                      .value()[0];
+                                    if(o){
+                                        var val = o.name;
+                                    } else {
+                                        var  val = 'no name';
+                                    }
+                                    return <span><i className='glyphicon glyphicon-star'></i>{val}</span>;
+                                   },
+
                         ]
                     },
                     {  
                         property: 'approve_id',
                         header:  'Approve Name',
                         width:400,
-                        chksearch: true,
+                        chksearch: false,
                         cell:[
-                          editable({editor: editors.input(),}),
-                          highlighter('approve'),
+                        editable({editor:editors.dropdown(datasources.approves,{value:'id',name:'name'}),}),      
+                        function(approve_id){
+                                var a = _(datasources.approves).filter(function(approve) {
+                                    return approve.id == approve_id;
+                                }).value()[0];
+                                var val = 'no Name';
+                                if(a){
+                                    val = a.name;
+                                }
+                                return  <span><i className='glyphicon glyphicon-star'></i>{val}</span>;
+                            },
                         ]
                     },
                     {  
@@ -177,7 +211,7 @@ var Product = React.createClass( {
                           (status) => status ? <span>&#10003;</span> : <span>x</span>,
                         ]
                     },
-                                        {   header: 'Action',
+                    {   header: 'Action',
                         search: false,
                         cell:[ 
                             function(value, celldata, rowIndex) {
@@ -202,18 +236,39 @@ var Product = React.createClass( {
                                     _self.refs.modal.show();
                                 }; // edit
 
-                                var remove = ()=>{
-                                    _self.state.delidx = idx;
-                                       // <!-- modalIsOpen: true -->
-                                    _self.setState({
-                                      model: {
-                                                title: 'Remove Test',
-                                                content: _self.state.data[idx],
-                                                editing:2,
-                                             },
-                                    });
-                                    _self.refs.modal.show();
-                                };  // remove               
+                                 var remove = ()=>{
+                                   _self.state.delidx = idx;
+                                   console.log('remove click----------------------->');
+                                 // <!-- modalIsOpen: true -->
+                                 // _self.setState({
+                                 //   model: {
+                                 //       title: 'Remove Test',
+                                 //       content: _self.state.data[idx],
+                                 //       editing:2,
+                                 //       },
+                                 //       });
+                                 // _self.refs.modal.show();
+                                 if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
+                                        console.log("You pressed OK!");
+                                        console.log(_self.state.data[idx]);
+                                    } else {
+                                        console.log("You pressed Cancel!");
+                                    }
+
+                                 };  // remove  
+
+                                // var remove = ()=>{
+                                //     _self.state.delidx = idx;
+                                //        // <!-- modalIsOpen: true -->
+                                //     _self.setState({
+                                //       model: {
+                                //                 title: 'Remove Test',
+                                //                 content: _self.state.data[idx],
+                                //                 editing:2,
+                                //              },
+                                //     });
+                                //     _self.refs.modal.show();
+                                // };  // remove               
                                return {
                                     value: ( 
                                     <span>
@@ -291,6 +346,15 @@ var Product = React.createClass( {
                               onSelect={_self.onSelect} />
                       </div>
                     </div>
+
+                 <SkyLight ref='modal' title={_self.state.modal.title} > 
+                      <Frmedit parent={_self} content={_self.state.modal.content}  /> 
+                 </SkyLight>
+                 <SkyLight ref='modal1' title={_self.state.modal.title} >
+                        {this.state.modal.content}
+                 </SkyLight>
+
+
             </div>
           </div>
         </div>
@@ -307,7 +371,74 @@ var Product = React.createClass( {
 
   },
   _Additem(){
-    let _self = this;
+            let _self = this;
+        console.log('show modal');
+
+        var properties = {
+            name:{
+                type: 'string'
+            },
+            email:{
+                type: 'string'
+            },
+            username:{
+                type: 'string'
+            },
+            status:{
+                type: 'boolean'
+            },
+        };
+
+        var schema = {
+               type: 'object',
+               properties: properties,
+        }; //schema
+
+        var getButtons = (submit) => {
+            return (
+                <span>
+                    <input type='submit'
+                        className='pure-button pure-button-primary ok-button'
+                        key='ok' value='OK'
+                        onClick={submit} />
+                        <input type='submit' className='pure-button cancel-button'
+                        key='cancel' value='Cancel' onClick={submit} />
+                </span>
+            );
+        };
+
+
+        var onSubmit = (editData, editValue) => {
+                                this.refs.modal1.hide();
+                                console.log('onSubmit',editData,editValue);
+                                if(editValue === 'Cancel') {
+                                    console.log('Cancel');
+                                    return;
+                                }
+                                // // this.state.data[idx] = editData;
+                                // this.setState({
+                                //     data: this.state.data
+                                // });
+                            };
+
+
+         _self.setState({
+           modal: {
+               title: 'Add New Product',
+               content: <Form
+                        className='pure-form pure-form-aligned'
+                        fieldWrapper={FieldWrapper}
+                        sectionWrapper={SectionWrapper}
+                        buttons={getButtons}
+                        schema={schema}
+                        validate={validate}
+                        values={{}}
+                        onSubmit={onSubmit}/>,
+                editing:0,
+               },
+         });//setState
+
+        _self.refs.modal1.show();
   },
     onSearch(search) {
     let _self = this;
@@ -322,7 +453,16 @@ var Product = React.createClass( {
         _self.setState({
             pagination: pagination
         });
+    },
+    submit(){
+      let _self = this;
+      _self.refs.modal.hide();
+    },
+    _close(){
+      let _self = this;
+      _self.refs.modal.hide();
     }
+
 } );
 
 export default Product;
