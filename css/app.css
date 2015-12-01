@@ -265,3 +265,7 @@ body {
     margin: 1em;
     float: right;
 }
+
+.cancel-button {
+    float: right;
+}

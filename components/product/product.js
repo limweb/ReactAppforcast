@@ -10,8 +10,8 @@ import _ from 'lodash';
 import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
 import Frmedit  from './editform';
 import  Form  from 'plexus-form';
-import  FieldWrapper  from './../field_wrapper';
-import  SectionWrapper  from './../section_wrapper';
+import  FieldWrapper  from './field_wrapper';
+import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
 
 
@@ -24,7 +24,40 @@ var datasources = {
   orders:[],
 };
 
+let  properties = ()=>{
+    
+          let properties = {
+             order_id: {
+                enum: datasources.orders.map((c)=>(c.id)),
+                enumNames: datasources.orders.map((c)=>(c.name)),
+             },
+             approve_id: {
+                enum: datasources.approves.map((c)=>(c.id)),
+                enumNames: datasources.approves.map((c)=>(c.name)),
+             },
+             name: {
+                type: 'string'
+             },
+             status: {
+                type: 'boolean'
+             },
+             created_at: {
+                type: 'string'
+             },
+             created_by: {
+                type: 'string'
+             },
+             updated_at: {
+                type: 'string'
+             },
+             updated_by: {
+                type: 'string'
+             },
+        };
 
+        return properties;
+    }
+  
 var Product = React.createClass( {
   mixins:[ Reflux.listenTo(ProductStore,'onStore'),  ],
   onStore:function(data) {
@@ -92,19 +125,6 @@ var Product = React.createClass( {
   },
   getColumn(){
     let _self = this;
-
-
-        var properties = {
-            id:{
-                type: 'number'
-            },
-            name:{
-                type: 'string'
-            },
-            status:{
-                type: 'boolean'
-            },
-        };
 
         var editable = cells.edit.bind(_self, 'editedCell', (value, celldata, rowIndex, property) => {
             console.log('edit----change-------------------',_self.state.data);
@@ -223,7 +243,7 @@ var Product = React.createClass( {
 
                                     var schema = {
                                         type: 'object',
-                                        properties: properties,
+                                        properties: properties(),
                                     }; //schema
 
                                     _self.setState({
@@ -371,27 +391,11 @@ var Product = React.createClass( {
 
   },
   _Additem(){
-            let _self = this;
+        let _self = this;
         console.log('show modal');
-
-        var properties = {
-            name:{
-                type: 'string'
-            },
-            email:{
-                type: 'string'
-            },
-            username:{
-                type: 'string'
-            },
-            status:{
-                type: 'boolean'
-            },
-        };
-
         var schema = {
                type: 'object',
-               properties: properties,
+               properties: properties()
         }; //schema
 
         var getButtons = (submit) => {

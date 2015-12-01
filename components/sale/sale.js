@@ -9,8 +9,8 @@ import  Overlay  from '../overlay';
 import _ from 'lodash';
 import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
 import  Form  from 'plexus-form';
-import  FieldWrapper  from './../field_wrapper';
-import  SectionWrapper  from './../section_wrapper';
+import  FieldWrapper  from './field_wrapper';
+import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
 
 let highlight = formatters.highlight;
