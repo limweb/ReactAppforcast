@@ -1,11 +1,11 @@
 <?php 
 
-// echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
-// echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
-// echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
-// echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
-// echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
-// echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
+echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
+echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
+echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
+echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
+echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
+echo password_hash('aaaa',PASSWORD_DEFAULT ),"\n";
 
 $ar = [
 '$2y$10$UqDzYzfJQq4V999KyaZH9.qv9wUBCNUZ98hVoPkSOTpxcOZDv9.ii',

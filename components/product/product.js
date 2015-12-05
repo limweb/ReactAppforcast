@@ -9,7 +9,7 @@ import  Overlay  from '../overlay';
 import _ from 'lodash';
 import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
 import Frmedit  from './editform';
-import  Form  from 'plexus-form';
+import Form   from  './../../libs/form';
 import  FieldWrapper  from './field_wrapper';
 import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
@@ -17,6 +17,21 @@ import  validate  from 'plexus-validate';
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
+
+let dialogStyles= {
+    width: '60%',
+    height: '400px',
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    marginTop: '-200px',
+    marginLeft: '-35%',
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    zIndex: 100,
+    padding: '10px',
+    boxShadow: '0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28)'
+}
 
 var datasources = {
   data:[],
@@ -30,34 +45,78 @@ let  properties = ()=>{
              order_id: {
                 enum: datasources.orders.map((c)=>(c.id)),
                 enumNames: datasources.orders.map((c)=>(c.name)),
+
              },
              approve_id: {
                 enum: datasources.approves.map((c)=>(c.id)),
                 enumNames: datasources.approves.map((c)=>(c.name)),
              },
              name: {
-                type: 'string'
+                type: 'string',
+                 "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
              },
              status: {
-                type: 'boolean'
+                type: 'boolean',
+                 "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
              },
              created_at: {
-                type: 'string'
+                type: 'string',
+                 "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
              },
              created_by: {
-                type: 'string'
+                type: 'string',
+                 "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
              },
              updated_at: {
-                type: 'string'
+                type: 'string',
+                 "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
              },
              updated_by: {
-                type: 'string'
+                type: 'string',
+                 "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
              },
         };
 
         return properties;
     }
-  
+
+    let getButtons = (submit) => {
+        return (
+            <span>
+                <input type='submit'
+                    className='pure-button pure-button-primary ok-button'
+                    key='ok' value='OK'
+                    onClick={submit} />
+                    <input type='submit' className='pure-button cancel-button'
+                    key='cancel' value='Cancel' onClick={submit} />
+            </span>
+        );
+    };  
+
 var Product = React.createClass( {
   mixins:[ Reflux.listenTo(ProductStore,'onStore'),  ],
   onStore:function(data) {
@@ -166,9 +225,9 @@ var Product = React.createClass( {
                         cell:[
                           editable({editor:editors.dropdown(datasources.orders,{value:'id',name:'name'}),}),      
                           function(order_id){
-                                  console.log('-------orderid',order_id,datasources.orders);
+                                  // console.log('-------orderid',order_id,datasources.orders);
                                    var o = _(datasources.orders).filter(function(order) {
-                                          console.log('----order',order,'-------------------------');
+                                          // console.log('----order',order,'-------------------------');
                                           return order.id == order_id; 
                                        })
                                       .value()[0];
@@ -245,15 +304,40 @@ var Product = React.createClass( {
                                         type: 'object',
                                         properties: properties(),
                                     }; //schema
+            
+                                    // console.log('schema=',schema);
 
-                                    _self.setState({
-                                        modal: {
-                                            title: 'Edit',
-                                            content: _self.state.data[idx],
+                                    var onSubmit = (editData, editValue) => {
+                                        _self.refs.modal1.hide();
+                                        console.log('onSubmit',editData,editValue);
+                                        if(editValue === 'Cancel') {
+                                            console.log('Cancel');
+                                            return;
+                                        }
+                                        // // _self.state.data[idx] = editData;
+                                        // _self.setState({
+                                        //     data: _self.state.data
+                                        // });
+                                    };
+
+
+                                     _self.setState({
+                                       modal: {
+                                           title: 'Add New Product',
+                                           content: <Form
+                                                    className='form-horizontal'
+                                                    fieldWrapper={FieldWrapper}
+                                                    sectionWrapper={SectionWrapper}
+                                                    buttons={getButtons}
+                                                    schema={schema}
+                                                    validate={validate}
+                                                    values={_self.state.data[idx]}
+                                                    onSubmit={onSubmit}/>,
                                             editing:0,
-                                        },
-                                    });//setState
-                                    _self.refs.modal.show();
+                                           },
+                                     });//setState
+
+                                    _self.refs.modal1.show();
                                 }; // edit
 
                                  var remove = ()=>{
@@ -367,10 +451,14 @@ var Product = React.createClass( {
                       </div>
                     </div>
 
-                 <SkyLight ref='modal' title={_self.state.modal.title} > 
-                      <Frmedit parent={_self} content={_self.state.modal.content}  /> 
+                 <SkyLight 
+                       dialogStyles={dialogStyles}
+                       ref='modal' title={_self.state.modal.title} > 
+                       <Frmedit parent={_self} content={_self.state.modal.content}  /> 
                  </SkyLight>
-                 <SkyLight ref='modal1' title={_self.state.modal.title} >
+                 <SkyLight    
+                        dialogStyles={dialogStyles}
+                        ref='modal1' title={_self.state.modal.title} >
                         {this.state.modal.content}
                  </SkyLight>
 
@@ -397,19 +485,6 @@ var Product = React.createClass( {
                type: 'object',
                properties: properties()
         }; //schema
-
-        var getButtons = (submit) => {
-            return (
-                <span>
-                    <input type='submit'
-                        className='pure-button pure-button-primary ok-button'
-                        key='ok' value='OK'
-                        onClick={submit} />
-                        <input type='submit' className='pure-button cancel-button'
-                        key='cancel' value='Cancel' onClick={submit} />
-                </span>
-            );
-        };
 
 
         var onSubmit = (editData, editValue) => {

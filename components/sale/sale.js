@@ -8,10 +8,26 @@ import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 're
 import  Overlay  from '../overlay';
 import _ from 'lodash';
 import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
-import  Form  from 'plexus-form';
-import  FieldWrapper  from './field_wrapper';
+import Form   from  './../../libs/form';
+import FieldWrapper from './../field_wrapper1c';
 import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
+
+let dialogStyles= {
+    width: '494px',
+    height: '320px',
+    position: 'fixed',
+    top: '50%',
+    left: '65%',
+    marginTop: '-200px',
+    marginLeft: '-35%',
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    zIndex: 100,
+    padding: '10px',
+    boxShadow: '0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28)'
+}
+
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
@@ -318,7 +334,7 @@ var Sale = React.createClass( {
 						</div>
 					</div>
 				</div>
-                <SkyLight ref='modal' title={_self.state.modal.title} >
+                <SkyLight dialogStyles={dialogStyles} ref='modal' title={_self.state.modal.title} >
                     {_self.state.modal.content}
                 </SkyLight>
 			</div>

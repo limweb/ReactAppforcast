@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Example of Bootstrap 3 Vertical Form Layout</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
+<style type="text/css">
+    .myForm {
+      border: 1px solid;
+      padding: 10px
+    }
+    @media (max-width: 767px) {
+      #form-group-top {
+        margin-top: 15px;
+      }
+    }
+
+</style>
+</head>
+<body>
+    <div class="container">
+      <h2>Horizontal form</h2>
+
+
+      <form class="form-horizontal myForm" role="form">
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="email">Email:</label>
+          <div class="col-sm-10">
+            <input type="email" class="form-control" id="email" placeholder="Enter email">
+          </div>
+        </div>
+        <div class="form-group ">
+          <label class="control-label col-sm-2" for="pwd">Password:</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="designation">Designation:</label>
+          <div class="col-sm-4">
+            <select class="form-control" id="designation" onchange="updateText('designation')">
+              <option value="" disabled selected>Select Designation</option>
+              <option value="04">Chairman</option>
+              <option value="03">Dean</option>
+            </select>
+          </div>
+          <label for="designationText" class="control-label col-sm-2" id="form-group-top" for="designationText">Designation Code</label>
+          <div class="col-sm-4">
+            <input type="text" value="" class="form-control" id="designationText" placeholder="Code" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox">Remember me</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+</body>
+</html> 
+
+

@@ -232,7 +232,8 @@ h2 {
   line-height: 3.648rem;
 }
 h3 {
-  font-size: 2.2rem;
+  /*font-size: 2.2rem;*/
+  font-size: 20px;
   line-height: 2.816rem;
 }
 h4 {
