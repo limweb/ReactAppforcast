@@ -41,7 +41,7 @@ class  ProductService extends RestfulServer {
 
 
 		public function update(){
-			consolelog($this->input);
+			consolelog('product update----->',$this->input);
             (!$this->format ? $this->format = 'json' : null);
             $product = $this->model->find($this->input->id);
             if($product) {
@@ -50,13 +50,38 @@ class  ProductService extends RestfulServer {
 	            $product->approve_id = $this->input->approve_id;
 	            $product->supplier = $this->input->supplier;
 	            $product->status = $this->input->status;
+	            $product->updated_by = $this->sessiones['user']->name;
 	            $rs = $product->save();
-					$o = new stdClass();
-					$o->data = $rs;
-				$this->response($o);
+				$this->response($rs);
             }
 		}
 
+		public function store(){
+			(!$this->format ? $this->format = 'json' : null);
+			consolelog('product store----->',$this->input);
+			$product = new Product();
+			$product->order_id = $this->input->order_id;
+			$product->approve_id = $this->input->approve_id;
+			$product->status = $this->input->status;
+	        $product->supplier = $this->input->supplier;
+			$product->name = $this->input->name;
+			$product->updated_by = $this->sessiones['user']->name;
+			$product->created_by = $this->sessiones['user']->name;
+			$rs = $product->save();
+			$this->response($rs);
+		}
+
+		public function destroy(){
+			consolelog('product destroy---->',$this->request);
+			(!$this->format ? $this->format = 'json' : null);
+			$idx = (int) $this->request[0];
+			$o = Product::find($idx);
+			$rs = -1;
+			if($o) {
+				$rs = $o->delete();
+			}
+			$this->response($rs);
+		}
 
 
 		public function Model(){

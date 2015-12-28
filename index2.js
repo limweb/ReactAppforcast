@@ -4,7 +4,7 @@ import  SkyLight  from 'babel!react-skylight/src/skylight.jsx'; // XXX: no prope
 import './index2.css';
 import validate from 'plexus-validate';
 import Form   from  './libs/form';
-
+import Confirmer from './components/comfirmform';
 
 let overlayStyles = {
     position: 'fixed',
@@ -17,11 +17,11 @@ let overlayStyles = {
 }
 
 let dialogStyles= {
-    width: '70%',
-    height: '400px',
+    width: '400px',
+    height: '190px',
     position: 'fixed',
     top: '50%',
-    left: '50%',
+    left: '54%',
     marginTop: '-200px',
     marginLeft: '-25%',
     backgroundColor: '#fff',
@@ -38,17 +38,44 @@ let closeButtonStyle = {
     margin: '-15px 0'
 }
 
+var Uploader = React.createClass({
+	render: function() {
+		return (
+			<div className="uploader">
+
+			 <h1>ต้องการจะลบ หรือไม่ </h1>
+			 <span>{this.props.value}</span>
+			</div>
+		);
+	}
+});
+
+// var schema = {
+// 	  "x-hints" : {
+// 	    form: {
+// 	      inputComponent: "uploader"
+// 	    }
+// 	  }
+// };
+
 var schema = {
   type      : "object",
   properties: {
     name : {
       title: "Name",
-      type: 'string',
+      "x-hints": {
+        form: {
+          classes: [ "form-text-field", "form-name-field" ]
+        }
+      }
     },
     email: {
       title: "Email",
-      type: 'string',
-      enum: ['A','B','C'],
+      "x-hints": {
+        form: {
+          classes: [ "form-text-field", "form-email-field" ]
+        }
+      }
     }
   },
   "x-hints": {
@@ -56,6 +83,11 @@ var schema = {
       classes: [ "form-person-section" ]
     }
   }
+};
+
+
+var handlers = {
+  uploader: Uploader
 };
 
 let FieldWrapper = React.createClass({
@@ -71,10 +103,10 @@ let FieldWrapper = React.createClass({
     console.log('-----this.props--children2',this.props.children);
     return (
         <div className={classes.join(' ')} key={this.props.key}>
-          <label className="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2" htmlFor={this.props.key}>
+         <label className="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2" htmlFor={this.props.key}>
             {this.props.title}
           </label>
-          <div className=" col-xs-10 col-sm-10 col-md-10 col-lg-10">
+          <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 maginauto">
           	{this.props.children}
           </div>
         </div>
@@ -108,14 +140,39 @@ let SectionWrapper = React.createClass({
 });
 
 
-let onSubmit = function(data, buttonValue, errors) {
-  alert('Data  : '+JSON.stringify(data)+'\n'+
-        'Button: '+buttonValue+'\n'+
-        'Errors: '+JSON.stringify(errors));
+
+let style = {
+	float:"right",
+	width:'100px'
 };
+
+
+let btnstyle = {
+	'padding-top': '10px',
+};
+
+var getButtons = (submit) => {
+    return (
+        <span style={btnstyle}>
+    	<br />
+	            <input type='submit'  style={{ width:'100px'}}
+	            className='btn btn-primary ok-button'
+                key='ok' value='Yes'
+                onClick={submit} />
+                <input type='submit' style={style} className='btn btn-default cancel-button'
+                key='cancel' value='No' onClick={submit} />
+        </span>
+    );
+}
+
+let vals = ['a','b','c',"Hello ABC"];
 
 class App extends React.Component {
    
+   hideDialog(){
+   	let _self = this;
+    _self.refs.simpleDialog.hide();
+   }
    showSimpleDialog(){
 
    	let _self = this;
@@ -124,21 +181,28 @@ class App extends React.Component {
    }
 	render() {
 		let _self = this;
+		let onSubmit = function(data, buttonValue, errors) {
+
+			if(buttonValue=='No' ) {
+				_self.refs.simpleDialog.hide();
+			} else {
+       alert('Data  : '+JSON.stringify(data)+'\n'+
+       'Button: '+buttonValue+'\n'+
+       'Errors: '+JSON.stringify(errors));
+     }
+   };
+
+
 		return (
 			<div>
 			<button onClick={_self.showSimpleDialog.bind(_self)} > App123 </button>
 
-			<SkyLight title="เพิ่มพนักงาน"  dialogStyles={dialogStyles} showOverlay={true}
-					ref="simpleDialog">
-          	<Form className="form-horizontal"
-          	   style=" p {    margin: 6px 0 10px;  } "
-          	   buttons={['Yes','No']}
-               schema   = {schema}
-               validate = {validate}
-               onSubmit = {onSubmit}
- 			   fieldWrapper={FieldWrapper}
-               sectionWrapper={SectionWrapper}
-                />
+			<SkyLight title=""  dialogStyles={dialogStyles} showOverlay={true}
+					ref="simpleDialog"
+			>
+          	<Confirmer  testClose={_self.hideDialog.bind(_self)} 
+          			values={['คุณฟฟฟฟ']} 
+          			title="TItle" onSubmit={onSubmit} />
         	</SkyLight>
 			</div>
 		);

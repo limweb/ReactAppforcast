@@ -17,10 +17,10 @@ var Login = React.createClass({
       onSubmit={ this.handleSubmit }>
         <h2 className="form-signin-heading">Please sign in</h2>
         <label for="inputEmail" className="sr-only"> Email address </label>
-        <input ref="name" type="email"  id="inputEmail"  className="form-control"    value={name}
+        <input ref="name" type="email"  id="inputEmail"  className="form-control"   
       placeholder="Email address"  required  autofocus></input>
         <label  for="inputPassword" className="sr-only"> Password </label>
-        <input ref="pass" type="password" id="inputPassword" value={pass}
+        <input ref="pass" type="password" id="inputPassword" 
       className="form-control"  placeholder="Password" required></input>
         <div className="checkbox">
           <label> <input type="checkbox" value="remember-me" /> Remember me </label>

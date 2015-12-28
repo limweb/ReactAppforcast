@@ -27,6 +27,9 @@ var UserDefinedField = React.createClass({
     }
   },
   render: function() {
+    // console.log('userdefinejs c =',this.props.component);
+    // console.log('userdefinejs s =',this.props.schema);
+    // console.log('userdefinejs v =',this.props.value);
     return React.createElement(this.props.component, {
       schema    : this.props.schema,
       value     : this.props.value || '',

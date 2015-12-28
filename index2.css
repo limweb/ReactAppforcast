@@ -5,3 +5,12 @@ h3 {
 p {
     margin: 8px 0 10px;
 }
+
+.form-horizontal {
+	margin:10px;
+}
+
+.maginauto {
+	text-align:center;
+	padding-bottom: 34px;
+}

@@ -3,96 +3,104 @@ import Reflux from 'reflux';
 import $ from  'jquery';
 import appcfg  from '../appcfg';
 
-var ForcastActons = Reflux.createActions([
+var forcastActions = Reflux.createActions([
 	'getForcasts',
 	'updateForcast',
-	'addForcast',
-	'delForcast',
+	// 'addForcast',
+	// 'delForcast',
 	]);
 
-var ForcastStore = Reflux.createStore({
+var forcastStore = Reflux.createStore({
 	"forcasts":[],
-	listenables:[ForcastActons],
+	listenables:[forcastActions],
 	onGetForcasts:function(){
+		let _self = this;
+		console.log('-------------------------------get forcast ------------------------------------');
 		$.ajax({
 			url: appcfg.host + '/services/ForcastService.php',
-			type: 'POST',
+			type: 'GET',
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.forcasts);
-				console.log("success",forcasts);
-			}.bind(this),
+				_self.forcasts = data.data;
+				_self.trigger(_self.forcasts);
+				console.log("success",_self.forcasts);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});	
 	},
-	onUpdateForcast:function(){
+	onUpdateForcast:function(data){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ForcastService.php',
 			type: 'PUT',
 			dataType: 'json',
+			data: JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.forcasts);
-				console.log("success",forcasts);
-			}.bind(this),
+				_self.trigger(_self.forcasts);
+				console.log("success",_self.forcasts);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+				bootbox.alert(xhr.responseText);
+			}.bind(_self)
 		});	
 	},
 	onAddForcast:function(){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ForcastService.php',
 			type: 'POST',
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.forcasts);
+				_self.trigger(_self.forcasts);
 				console.log("success",forcasts);
-			}.bind(this),
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});			
 	},
 	onDelForcast:function(idx){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ForcastService.php/'+idx,
 			type: 'DELETE',
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.forcasts);
+				_self.trigger(_self.forcasts);
 				console.log("success",forcasts);
-			}.bind(this),
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});				
 	}
 });
 
 
 module.exports = {
-	ForcastActions: ForcastActions,
-	ForcastStore: ForcastStore
+	ForcastActions: forcastActions,
+	ForcastStore: forcastStore
 }

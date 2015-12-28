@@ -44,7 +44,7 @@ module.exports = function(fields, props) {
     return wrapped.field(props, React.createElement(fields.Selection, props));
   }
 
-  console.log('------schemtype=',schema.type);
+  // console.log('------schemtype=',schema.type);
   switch (schema.type) {
   case "boolean":
     return wrapped.field(props, React.createElement(fields.CheckBox, props));
@@ -52,11 +52,19 @@ module.exports = function(fields, props) {
     return wrapped.section(props, types.object(fields, props));
   case "array"  :
     return wrapped.section(props, types.array(fields, props));
+  case "h1"  :
+    return wrapped.field(props,React.createElement("h1", null, props.schema.value));  
+  case "h2"  :
+    return wrapped.field(props,React.createElement("h2", null, props.schema.value));  
+  case "h3"  :
+    return wrapped.field(props,React.createElement("h3", null, props.schema.value));
+  case "label"  :
+    return wrapped.field(props,React.createElement("span", null, props.schema.value));
   case "number" :
   case "integer":
   case "string" :
   default:
-    console.log('------->default');
+    // console.log('------->default');
     return wrapped.field(props, React.createElement(fields.InputField,props));
   }
 };

@@ -12,6 +12,22 @@ import Form   from  './../../libs/form';
 import FieldWrapper from './../field_wrapper1c';
 import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
+import Confirmer from './../comfirmform';
+
+let YesNostyle= {
+    width: '400px',
+    height: '190px',
+    position: 'fixed',
+    top: '50%',
+    left: '54%',
+    marginTop: '-200px',
+    marginLeft: '-25%',
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    zIndex: 100,
+    padding: '10px',
+    boxShadow: '0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28)'
+}
 
 let dialogStyles= {
     width: '494px',
@@ -132,11 +148,10 @@ var Sale = React.createClass( {
                 id: celldata[rowIndex].id,
             });
             _self.state.data[idx][property] = value;
-			SaleActions.updateSale(_self.state.data[idx]);
+			       SaleActions.updateSale(_self.state.data[idx]);
             _self.setState({
                 data: datasources.data,
             });
-
 
         });
         
@@ -226,41 +241,37 @@ var Sale = React.createClass( {
                      }; // edit
 
                      var remove = ()=>{
-                       _self.state.delidx = idx;
-                       console.log('remove click----------------------->');
-                     // <!-- modalIsOpen: true -->
-                     // _self.setState({
-                     //   model: {
-                     //       title: 'Remove Test',
-                     //       content: _self.state.data[idx],
-                     //       editing:2,
-                     //       },
-                     //       });
-                     // _self.refs.modal.show();
-                     if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
-                            console.log("You pressed OK!");
-                            console.log(_self.state.data[idx]);
-                        } else {
-                            console.log("You pressed Cancel!");
-                        }
-
+                          _self.state.delidx = idx;
+                          _self.setState({
+                            modal: {
+                                      title: 'Are you sure want to delete ?',
+                                      content: _self.state.data[idx].name,
+                                      idx:_self.state.data[idx].id,
+                                      method:'delete',
+                                   },
+                          });
+                          _self.refs.xmodal.show();
                      };  // remove  
 
                      var resetpass = () => {
-                       _self.state.delidx = idx;
-                     if(confirm("Are you sure want to reset this password of! \n"+_self.state.data[idx].name) == true) {
-                            console.log("You pressed OK!");
-                            console.log(_self.state.data[idx]);
-                        } else {
-                            console.log("You pressed Cancel!");
-                        }
-
+                          _self.state.delidx = idx;
+                          _self.setState({
+                            modal: {
+                                      title: 'Are you sure want to reset password ?',
+                                      content: _self.state.data[idx].name,
+                                      idx:_self.state.data[idx].id,
+                                      method:'resetpass',
+                                   },
+                          });
+                          _self.refs.xmodal.show();
                      };
 
                      return {
                        value: ( 
                            <span>
                            <span title='remove item' className='remove' onClick={remove.bind(_self)} style={{cursor: 'pointer'}}>&#10007;</span>
+                            &nbsp;
+                            &nbsp;
                             &nbsp;
                            <span title='reset password' className='resetpass' onClick={resetpass.bind(_self)} style={{cursor: 'pointer'}}><i className="fa fa-key"></i></span>
                            </span>
@@ -281,6 +292,27 @@ var Sale = React.createClass( {
         var columns = _self.getColumn();
         var data =    _self.state.data;
         var pagination = _self.state.pagination;
+
+        let onYesNo = function(data, buttonValue, method,idx) {
+            if(buttonValue=='No' ) {
+            } else {
+                if(method =='delete' && buttonValue == 'Yes'){
+                    console.log('Data  : '+JSON.stringify(data)+'\n'+
+                        'Button: '+buttonValue+'\n'+
+                        'Errors: '+JSON.stringify(method));
+                    SaleActions.delSale(JSON.stringify(data));
+                }else if(method =='resetpass' && buttonValue == 'Yes'){
+                    console.log('resetpass data =', data,buttonValue,method);
+                    // let sale = _self.state.data[data];
+                    // console.log('sale = ', _self.state.data[data],'/',sale);
+                    // alert('reset pass');
+                    SaleActions.resetPass(data);
+
+                }
+            }
+            _self.refs.xmodal.hide();
+       };
+
 
         if (_self.state.search.query) {
             data = Search.search(
@@ -337,6 +369,15 @@ var Sale = React.createClass( {
                 <SkyLight dialogStyles={dialogStyles} ref='modal' title={_self.state.modal.title} >
                     {_self.state.modal.content}
                 </SkyLight>
+                <SkyLight dialogStyles={YesNostyle} ref='xmodal'> 
+                <Confirmer onYesNo={onYesNo} 
+                      subtitle={this.state.modal.content}
+                      title={this.state.modal.title}
+                      idx = {this.state.modal.idx}
+                      method = {this.state.modal.method}
+                      />
+                </SkyLight>
+
 			</div>
 			);
 	},
@@ -393,6 +434,25 @@ var Sale = React.createClass( {
                                 if(editValue === 'Cancel') {
                                     console.log('Cancel');
                                     return;
+                                }
+
+                                let _name = editData.name;
+                                let _status = editData.status || 0 ;
+                                if(_status) {
+                                  _status = 1;
+                                } else {
+                                  _status = 0;
+                                }
+                                let _email = editData.email ||  '' ;
+                                let _username = editData.username || '' ;
+                        
+
+                                if(_name == undefined || _email== '' || _username == '' ) {
+                                    console.log('undefined');
+                                    alert('ข้อมูลไม่ครบ');
+                                } else {
+                                  console.log('hava data');
+                                  SaleActions.addSale( {name:_name,status:_status,email:_email,username: _username });
                                 }
                                 // // this.state.data[idx] = editData;
                                 // this.setState({

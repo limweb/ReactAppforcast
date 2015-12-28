@@ -5,7 +5,7 @@ import appcfg  from '../appcfg';
 // import { ProductActions, ProductStore } from './store/productstore';
 // mixins:[Reflux.listenTo(ProductStore,'onStore')],
 // onStore:function(data) {
-// 	 this.setState({
+// 	 _self.setState({
 //  	product:data 
 //   });
 // },
@@ -22,20 +22,23 @@ var productStore = Reflux.createStore({
 	products:[],
 	listenables:[productActions],
 	init() {
+		let _self = this;
 		console.log("init----------product store---");
-    	this.resetState();
+    	_self.resetState();
     },
 	resetState() {
+		let _self = this;
 		console.log('========= Reset State----------------');
-		this.setState(this.getInitialState());
+		_self.setState(_self.getInitialState());
 	},
 
 	setState(state=undefined) {
+		let _self = this;
 		console.log('========= Set State----------------');
 		if (state) {
-			this.state = state;
+			_self.state = state;
 		}
-		this.trigger(this.state);
+		_self.trigger(_self.state);
 	},
 	getInitialState: function() {
 		let _self = this;
@@ -43,6 +46,7 @@ var productStore = Reflux.createStore({
 		return { products: _self.products };
 	},
 	onGetProducts:function(){
+		let _self = this;
 		console.log('product---store----getProducts---------------------->onGetProducts');
 		$.ajax({
 			url: appcfg.host + '/services/ProductService.php',
@@ -50,20 +54,21 @@ var productStore = Reflux.createStore({
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-			    this.products = data.data;
-				this.trigger(this.products);
-				console.log("success",this.products);
-			}.bind(this),
+			    _self.products = data.data;
+				_self.trigger(_self.products);
+				console.log("success",_self.products);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});	
 	},
 	onUpdateProduct:function(data){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ProductService.php',
 			type: 'PUT',
@@ -71,54 +76,63 @@ var productStore = Reflux.createStore({
 			data:  JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.products);
-				console.log("success",this.products);
-			}.bind(this),
+				 productActions.getProducts();
+				// _self.products = data.data;
+				// _self.trigger(_self.products);
+				console.log("success",_self.products);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});	
 	},
-	onAddProduct:function(){
+	onAddProduct:function(data){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ProductService.php',
 			type: 'POST',
 			dataType: 'json',
+			data: JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.products);
-				console.log("success",products);
-			}.bind(this),
+				productActions.getProducts();
+				// _self.products = data.data;
+				// _self.trigger(_self.products);
+				console.log("success",_self.products);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});			
 	},
 	onDelProduct:function(idx){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ProductService.php/'+idx,
 			type: 'DELETE',
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.products);
-				console.log("success",products);
-			}.bind(this),
+				productActions.getProducts();
+				// _self.products = data.data;
+				// _self.trigger(_self.products);
+				console.log("success",_self.products);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});				
 	}
 });

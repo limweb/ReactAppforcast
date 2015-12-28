@@ -12,6 +12,22 @@ import Form   from  './../../libs/form';
 import FieldWrapper from './../field_wrapper1c';
 import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
+import Confirmer from './../comfirmform';
+
+let YesNostyle= {
+    width: '400px',
+    height: '190px',
+    position: 'fixed',
+    top: '50%',
+    left: '54%',
+    marginTop: '-200px',
+    marginLeft: '-25%',
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    zIndex: 100,
+    padding: '10px',
+    boxShadow: '0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28)'
+}
 
 let dialogStyles= {
     width: '494px',
@@ -120,12 +136,13 @@ var Approve = React.createClass( {
         };
 
         var editable = cells.edit.bind(_self, 'editedCell', (value, celldata, rowIndex, property) => {
-            console.log('edit----change-------------------',_self.state.data);
+            // console.log('edit----change-------------------',_self.state.data);
             var idx = findIndex(_self.state.data, {
                 id: celldata[rowIndex].id,
             });
+
             _self.state.data[idx][property] = value;
-			ApproveActions.updateApprove(_self.state.data[idx]);
+			     ApproveActions.updateApprove(_self.state.data[idx]);
             _self.setState({
                 data: datasources.data,
             });
@@ -199,24 +216,16 @@ var Approve = React.createClass( {
                      }; // edit
 
                      var remove = ()=>{
-                       _self.state.delidx = idx;
-                       console.log('remove click----------------------->');
-                     // <!-- modalIsOpen: true -->
-                     // _self.setState({
-                     //   model: {
-                     //       title: 'Remove Test',
-                     //       content: _self.state.data[idx],
-                     //       editing:2,
-                     //       },
-                     //       });
-                     // _self.refs.modal.show();
-                     if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
-                            console.log("You pressed OK!");
-                            console.log(_self.state.data[idx]);
-                        } else {
-                            console.log("You pressed Cancel!");
-                        }
-
+                          _self.state.delidx = idx;
+                          _self.setState({
+                            modal: {
+                                      title: 'Are you sure want to delete ?',
+                                      content: _self.state.data[idx].name,
+                                      idx:_self.state.data[idx].id,
+                                      method:'delete',
+                                   },
+                          });
+                          _self.refs.xmodal.show();
                      };  // remove               
                      return {
                        value: ( 
@@ -244,6 +253,21 @@ var Approve = React.createClass( {
         var columns = _self.getColumn();
         var data =    _self.state.data;
         var pagination = _self.state.pagination;
+
+        let onYesNo = function(data, buttonValue, method) {
+        if(buttonValue=='No' ) {
+
+        } else {
+          if(method =='delete' && buttonValue == 'Yes'){
+              console.log('Data  : '+JSON.stringify(data)+'\n'+
+                  'Button: '+buttonValue+'\n'+
+                  'Errors: '+JSON.stringify(method));
+              ApproveActions.delApprove(JSON.stringify(data));
+          }
+        }
+        _self.refs.xmodal.hide();
+       };
+
 
         if (_self.state.search.query) {
             data = Search.search(
@@ -301,6 +325,15 @@ var Approve = React.createClass( {
                             ref='modal' title={_self.state.modal.title} >
                     {_self.state.modal.content}
                 </SkyLight>
+                <SkyLight dialogStyles={YesNostyle} ref='xmodal'> 
+                <Confirmer onYesNo={onYesNo} 
+                      subtitle={this.state.modal.content}
+                      title={this.state.modal.title}
+                      idx = {this.state.modal.idx}
+                      method = {this.state.modal.method}
+                      />
+                </SkyLight>
+
 			</div>
 			);
 	},
@@ -354,6 +387,15 @@ var Approve = React.createClass( {
                                 if(editValue === 'Cancel') {
                                     console.log('Cancel');
                                     return;
+                                }
+                                let _name = editData.name;
+                                let _status = editData.status || 0 ;
+
+                                if(name == undefined) {
+                                      console.log('undefined');
+                                } else {
+                                    console.log('hava data');
+                                    ApproveActions.addApprove({name:_name,status:_status});
                                 }
                                 // // this.state.data[idx] = editData;
                                 // this.setState({

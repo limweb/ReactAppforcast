@@ -320,6 +320,7 @@ class RestfulServer {
         }
 
         protected  function deliver_response($format=null, $api_response){
+            consolelog('----restful deliver_ersponse');
                     // Set HTTP Response
             header('HTTP/1.1 '.$api_response['status'].' '.$this->http_response_code[ $api_response['status'] ]);
                     // Process different content types
@@ -352,6 +353,7 @@ class RestfulServer {
         }
 
         protected function  response($data,$format=null) {
+                consolelog('------ restful response');
                 $this->response['code'] = 1;
                 $this->response['status'] = $this->api_response_code[ $this->response['code'] ]['HTTP Response'];
                 $this->response['data'] = $data;

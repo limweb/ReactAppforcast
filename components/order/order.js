@@ -1,23 +1,34 @@
 import React from 'react';
 import Reflux from 'reflux';
-import {
-    OrderActions, OrderStore
-}
-from '../../store/orderstore';
+import { OrderActions, OrderStore } from '../../store/orderstore';
 import Perpage from '../perpage';
 import Pagesearch from '../pagesearch';
 import Paginator from 'react-pagify';
-import {
-    Table, Search, sortColumn, editors, formatters, predicates, cells
-}
-from 'reactabular';
+import {  Table, Search, sortColumn, editors, formatters, predicates, cells } from 'reactabular';
 import Overlay from '../overlay';
-import _ from 'lodash';
+import _  from 'lodash';
+import $  from 'jquery';
 import SkyLight from 'babel!react-skylight/src/skylight.jsx'; // XXX: no proper build yet
 import Form   from  './../../libs/form';
 import FieldWrapper from './../field_wrapper1c';
 import SectionWrapper from './section_wrapper';
 import validate from 'plexus-validate';
+import Confirmer from './../comfirmform';
+
+let YesNostyle= {
+    width: '400px',
+    height: '190px',
+    position: 'fixed',
+    top: '50%',
+    left: '54%',
+    marginTop: '-200px',
+    marginLeft: '-25%',
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    zIndex: 100,
+    padding: '10px',
+    boxShadow: '0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28)'
+}
 
 let dialogStyles= {
     width: '494px',
@@ -173,19 +184,19 @@ var Order = React.createClass({
                     ]
                 },
                 {   
-                   header: 'Action',
-                   search: false,
-                   cell:[ 
-                   function(value, celldata, rowIndex) {
-                     var idx = findIndex(_self.state.data, {
-                        id: celldata[rowIndex].id,
-                    });
+                 header: 'Action',
+                 search: false,
+                 cell:[ 
+                 function(value, celldata, rowIndex) {
+                   var idx = findIndex(_self.state.data, {
+                    id: celldata[rowIndex].id,
+                });
 
-                     var edit = () => {
+                   var edit = () => {
 
-                        var schema = {
-                            type: 'object',
-                            properties: properties,
+                    var schema = {
+                        type: 'object',
+                        properties: properties,
                                     }; //schema
 
                                     _self.setState({
@@ -199,24 +210,16 @@ var Order = React.createClass({
                                 }; // edit
 
                                 var remove = () => {
-                                    _self.state.delidx = idx;
-                                    // console.log('remove click----------------------->');
-                                    // <!-- modalIsOpen: true -->
-                                    // _self.setState({
-                                    //   model: {
-                                    //       title: 'Remove Test',
-                                    //       content: _self.state.data[idx],
-                                    //       editing:2,
-                                    //       },
-                                    //       });
-                                    // _self.refs.modal.show();
-                                    if (confirm("คุณแน่ใจที่จะ ลบ! \n" + _self.state.data[idx].name) == true) {
-                                        // console.log("You pressed OK!");
-                                        // console.log(_self.state.data[idx]);
-                                    } else {
-                                        // console.log("You pressed Cancel!");
-                                    }
-
+                                   _self.state.delidx = idx;
+                                  _self.setState({
+                                    modal: {
+                                              title: 'Are you sure want to delete ?',
+                                              content: _self.state.data[idx].name,
+                                              idx:_self.state.data[idx].id,
+                                              method:'delete',
+                                           },
+                                  });
+                                    _self.refs.xmodal.show();
                                 }; // remove               
                                 return {
                                     value: ( < span >
@@ -242,118 +245,141 @@ var Order = React.createClass({
                      if(_self.state.columns.length > 0 ) {
                         return _self.state.columns;
                     } else {
-                       return columns;
-                   }
-               },
-               render: function () {
-                  let _self = this;
-                  var header = _self.getHeader();
-                  var columns = _self.getColumn();
-                  var data = _self.state.data;
-                  var pagination = _self.state.pagination;
+                     return columns;
+                 }
+             },
+             render: function () {
+              let _self = this;
+              var header = _self.getHeader();
+              var columns = _self.getColumn();
+              var data = _self.state.data;
+              var pagination = _self.state.pagination;
 
-                  if (_self.state.search.query) {
-                    data = Search.search(
-                        data,
-                        columns,
-                        _self.state.search.column,
-                        _self.state.search.query
-                        );
+              let onYesNo = function(data, buttonValue, method) {
+                if(buttonValue=='No' ) {
+                } else {
+                    if(method =='delete' && buttonValue == 'Yes'){
+                        console.log('Data  : '+JSON.stringify(data)+'\n'+
+                            'Button: '+buttonValue+'\n'+
+                            'Errors: '+JSON.stringify(method));
+                        OrderActions.delOrder(JSON.stringify(data));
+                    }
                 }
+                _self.refs.xmodal.hide();
+            };
 
-                data = sortColumn.sort(data, _self.state.sortingColumn);
-                var paginated = Paginator.paginate(data, pagination);
-                return ( < div >
-                    < div className = "row" >
-                    < br / >
-                    < div className = "panel panel-default" >
-                    < div className = "panel-heading" >
-                    < b > Order < /b> < /div > < div className = "panel-body" >
-                    < Overlay ref = "overay" / >
-                    < div className = 'controls' >
-                    < Perpage show = {
-                        _self.props.showpage
-                    }
-                    pagination = {
-                        pagination
-                    }
-                    onPerPage = {
-                        _self.onPerPage
-                    }
-                    addItem = {
-                        _self._Additem
-                    }
-                    /> < Pagesearch show = {
-                        _self.props.showsearch
-                    }
-                    columns = {
-                        columns
-                    }
-                    data = {
-                        data
-                    }
-                    onSearch = {
-                        _self.onSearch
-                    }
-                    /> < /div > < Table width = "100%"
-                    columns = {
-                        _self.state.columns
-                    }
-                    data = {
-                        paginated.data
-                    }
-                    header = {
-                        header
-                    }
-                    className = 'pure-table pure-table-striped'
-                    row = {
-                        (d, rowIndex) => {
-                            return {
-                                className: rowIndex % 2 ? 'odd-row' : 'even-row',
-                                onClick: () => console.log('clicked row', rowIndex, d)
-                            };
-                        }
-                    }
-                    />
 
-                    < div className = 'controls' >
-                    < div className = 'pagination' >
-                    < Paginator page = {
-                        paginated.page
-                    }
-                    pages = {
-                        paginated.amount
-                    }
-                    beginPages = {
-                        3
-                    }
-                    endPages = {
-                        3
-                    }
-                    onSelect = {
-                        _self.onSelect
-                    }
-                    /> < /div > < /div>
+             if (_self.state.search.query) {
+                data = Search.search(
+                    data,
+                    columns,
+                    _self.state.search.column,
+                    _self.state.search.query
+                    );
+            }
 
-                    < /div> < /div > < /div> 
-                    < SkyLight ref ='modal'
+            data = sortColumn.sort(data, _self.state.sortingColumn);
+            var paginated = Paginator.paginate(data, pagination);
+            return ( < div >
+                < div className = "row" >
+                < br / >
+                < div className = "panel panel-default" >
+                < div className = "panel-heading" >
+                < b > Order < /b> < /div > < div className = "panel-body" >
+                < Overlay ref = "overay" / >
+                < div className = 'controls' >
+                < Perpage show = {
+                    _self.props.showpage
+                }
+                pagination = {
+                    pagination
+                }
+                onPerPage = {
+                    _self.onPerPage
+                }
+                addItem = {
+                    _self._Additem
+                }
+                /> < Pagesearch show = {
+                    _self.props.showsearch
+                }
+                columns = {
+                    columns
+                }
+                data = {
+                    data
+                }
+                onSearch = {
+                    _self.onSearch
+                }
+                /> < /div > < Table width = "100%"
+                columns = {
+                    _self.state.columns
+                }
+                data = {
+                    paginated.data
+                }
+                header = {
+                    header
+                }
+                className = 'pure-table pure-table-striped'
+                row = {
+                    (d, rowIndex) => {
+                        return {
+                            className: rowIndex % 2 ? 'odd-row' : 'even-row',
+                            onClick: () => console.log('clicked row', rowIndex, d)
+                        };
+                    }
+                }
+                />
+
+                < div className = 'controls' >
+                < div className = 'pagination' >
+                < Paginator page = {
+                    paginated.page
+                }
+                pages = {
+                    paginated.amount
+                }
+                beginPages = {
+                    3
+                }
+                endPages = {
+                    3
+                }
+                onSelect = {
+                    _self.onSelect
+                }
+                /> < /div > < /div>
+
+                < /div> < /div > < /div> 
+                < SkyLight ref ='modal'
                     dialogStyles={dialogStyles}
                     title = {_self.state.modal.title } > 
                     {_self.state.modal.content} 
-                    < /SkyLight> 
-                    < /div >);
-            },
-            onPerPage(page) {
-                let _self = this;
-                var pagination = _self.state.pagination || {};
-                pagination.perPage = parseInt(page.perPage) || 10;
-                _self.setState({
-                    pagination: pagination
-                });
+                < /SkyLight> 
+                <SkyLight dialogStyles={YesNostyle} ref='xmodal'> 
+                <Confirmer onYesNo={onYesNo} 
+                    subtitle={this.state.modal.content}
+                    title={this.state.modal.title}
+                    idx = {this.state.modal.idx}
+                    method = {this.state.modal.method}
+                    />
+                </SkyLight>
 
-            },
-            _Additem() {
-                let _self = this;
+                < /div >);
+        },
+        onPerPage(page) {
+            let _self = this;
+            var pagination = _self.state.pagination || {};
+            pagination.perPage = parseInt(page.perPage) || 10;
+            _self.setState({
+                pagination: pagination
+            });
+
+        },
+        _Additem() {
+            let _self = this;
                                     // console.log('show modal');
 
                                     var properties = {
@@ -396,15 +422,29 @@ var Order = React.createClass({
 
                                         var onSubmit = (editData, editValue) => {
                                             this.refs.modal.hide();
-                                            // console.log('onSubmit', editData, editValue);
+                                            console.log('onSubmit', editData, editValue);
+
                                             if (editValue === 'Cancel') {
                                                 console.log('Cancel');
                                                 return;
                                             }
-                                            // // this.state.data[idx] = editData;
+                                            
+                                            let _name = editData.name;
+                                            let _status = editData.status || 0 ;
+
+                                            if(name == undefined) {
+                                                console.log('undefined');
+                                            } else {
+                                                console.log('hava data');
+                                                OrderActions.addOrder({name:_name,status:_status});
+                                            
+
+                                            }
+
+                                            // this.state.data[idx] = editData;
                                             // this.setState({
-                                                //     data: this.state.data
-                                                // });
+                                            //     data: this.state.data
+                                            // });
                                             };
 
 

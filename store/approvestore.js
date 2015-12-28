@@ -15,6 +15,7 @@ var approveStore = Reflux.createStore({
 	approves:[],
 	listenables:[approveActions],
 	onGetApproves:function(){
+		let _self = this;
 		console.log('ApproveAction.getApproves');
 		$.ajax({
 			url: appcfg.host + '/services/ApproveService.php',
@@ -22,74 +23,83 @@ var approveStore = Reflux.createStore({
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-			    this.approves = data.data;
-				this.trigger(this.approves);
-				console.log("success",this.approves);
-			}.bind(this),
+			    _self.approves = data.data;
+				_self.trigger(_self.approves);
+				console.log("success",_self.approves);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});	
 	},
-	onUpdateApprove:function(){
+	onUpdateApprove:function(data){
+		console.log("updatestore data=",data);
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ApproveService.php',
 			type: 'PUT',
 			dataType: 'json',
+			data: JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.approves);
-				console.log("success",this.approves);
-			}.bind(this),
+				_self.trigger(_self.approves);
+				console.log("success",_self.approves);
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});	
 	},
-	onAddApprove:function(){
+	onAddApprove:function(data){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ApproveService.php',
 			type: 'POST',
 			dataType: 'json',
+			data: JSON.stringify(data),
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.approves);
-				console.log("success",approves);
-			}.bind(this),
+				_self.approves = data;
+				// _self.trigger(_self.approves);
+				console.log("success",_self.approves);
+				approveActions.getApproves();
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});			
 	},
 	onDelApprove:function(idx){
+		let _self = this;
 		$.ajax({
 			url: appcfg.host + '/services/ApproveService.php/'+idx,
 			type: 'DELETE',
 			dataType: 'json',
 			complete: function(xhr, textStatus) {
 				console.log('complete');
-			}.bind(this),
+			}.bind(_self),
 
 			success: function(data, textStatus, xhr) {
-				this.trigger(this.approves);
+				 approveActions.getApproves();
+				_self.trigger(_self.approves);
 				console.log("success",approves);
-			}.bind(this),
+			}.bind(_self),
 
 			error: function(xhr, textStatus, errorThrown) {
 				console.log('error',xhr,textStatus,errorThrown);
-			}.bind(this)
+			}.bind(_self)
 		});				
 	}
 });

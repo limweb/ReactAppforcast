@@ -10,7 +10,7 @@
 // ini_set('max_execution_time', 500);
 // // ini_set("display_errors", 1);
 // ini_set("memory_limit",-1);
-
+date_default_timezone_set('Asia/Bangkok');
 
 require_once __DIR__.'/vendor/autoload.php';
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -95,63 +95,69 @@ function consolelog($status = 200)  {
 
 class Order extends Illuminate\Database\Eloquent\Model { 
     protected $table = 'orders';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
 class Product extends Illuminate\Database\Eloquent\Model {
     protected $table = 'products';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
 class Approve extends Illuminate\Database\Eloquent\Model {
     protected $table = 'approves';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
 class Monthapp extends Illuminate\Database\Eloquent\Model {
     protected $table = 'monthapps';
-    protected $fllable = [];
+    protected $fillable = ['editable'];
     protected $guarded =['id'];
 
 }
 
 class App extends Illuminate\Database\Eloquent\Model {
     protected $table = 'apps';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
 class TColumn extends Illuminate\Database\Eloquent\Model {
     protected $table = 'tbcolumns';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
 class Vproduct extends Illuminate\Database\Eloquent\Model {
     protected $table = 'v_products1';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
 class Sale extends Illuminate\Database\Eloquent\Model {
     protected $table = 'sales';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
 }
 
+class Forcast extends Illuminate\Database\Eloquent\Model {
+    protected $table = 'forcasts';
+    protected $fillable = [];
+    protected $guarded =['id'];
+}
+
 class Menu extends Illuminate\Database\Eloquent\Model {
     protected $table = 'menus';
-    protected $fllable = [];
+    protected $fillable = [];
     protected $guarded =['id'];
 
     public function dorpdownlist(){
@@ -159,6 +165,7 @@ class Menu extends Illuminate\Database\Eloquent\Model {
     }
 
 }
+
 
 // $rs = Vproduct::All();
 // dump($rs);

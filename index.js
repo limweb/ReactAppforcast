@@ -7,7 +7,7 @@ import Approve from './components/approve/approve';
 import Sale  from './components/sale/sale';
 // import Product  from './components/product';
 import Product  from './components/product/product';
-import Forcast  from './components/forcast';
+import Forcast  from './components/forcast/forcast';
 import Report  from './components/reports';
 import ContelItem  from './components/contentitem';
 import Setting from './components/setting';
@@ -248,8 +248,11 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
     });
 
     var UserBrand = React.createClass({
-      logout:function(){
+      logout: function(){
           LoginActons.getLogout();
+      },
+      account: function(){
+          LoginActons.chkUser();
       },
       render: function() {
         // console.log('userbrand=',this.props);
@@ -263,7 +266,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
                           <img width="30px" height="30px" src={ this.props.user.img ? this.props.user.img : 'images/30x30.png' } className="img-circle special-img" /> &nbsp;{this.props.user.name}<b className="caret"></b>&nbsp;&nbsp;
                    </a>
                   <ul className="dropdown-menu">
-                              <li><a href="#"><i className="fa fa-cog"></i> Account</a></li>
+                              <li><a onClick={this.account} href="#"><i className="fa fa-cog"></i> Account</a></li>
                               <li className="divider"></li>
                               <li><a onClick={this.logout} href="#"><i className="fa fa-sign-out"></i> Sign-out</a></li>
                   </ul>
@@ -355,6 +358,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
          console.log(' ======================================== onStore data=',data);
          AppActions.getConfig();
          this.setState({user:data});
+         window.user = data;
       },
       componentDidMount: function() {
          // console.log('didMount');

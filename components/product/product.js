@@ -13,13 +13,28 @@ import Form   from  './../../libs/form';
 import  FieldWrapper  from './field_wrapper';
 import  SectionWrapper  from './section_wrapper';
 import  validate  from 'plexus-validate';
-
+import Confirmer from './../comfirmform';
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
 
+let YesNostyle= {
+    width: '400px',
+    height: '190px',
+    position: 'fixed',
+    top: '50%',
+    left: '54%',
+    marginTop: '-200px',
+    marginLeft: '-25%',
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    zIndex: 100,
+    padding: '10px',
+    boxShadow: '0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28)'
+}
+
 let dialogStyles= {
-    width: '60%',
+    width: '400px',
     height: '400px',
     position: 'fixed',
     top: '50%',
@@ -43,62 +58,77 @@ let  properties = ()=>{
     
           let properties = {
              order_id: {
+                title: 'Order',
                 enum: datasources.orders.map((c)=>(c.id)),
                 enumNames: datasources.orders.map((c)=>(c.name)),
 
              },
              approve_id: {
+                title: 'Approve',
                 enum: datasources.approves.map((c)=>(c.id)),
                 enumNames: datasources.approves.map((c)=>(c.name)),
              },
              name: {
                 type: 'string',
-                 "x-hints": {
+                title: 'Name',
+                "x-hints": {
                   form: {
                     classes: [ "form-control" ]
                   }
                 }
+
+             },             
+             supplier: {
+                type: 'string',
+                title: 'Supplier',
+                "x-hints": {
+                  form: {
+                    classes: [ "form-control" ]
+                  }
+                }
+
              },
              status: {
                 type: 'boolean',
-                 "x-hints": {
+                title: 'Status',
+                "x-hints": {
                   form: {
                     classes: [ "form-control" ]
                   }
                 }
              },
-             created_at: {
-                type: 'string',
-                 "x-hints": {
-                  form: {
-                    classes: [ "form-control" ]
-                  }
-                }
-             },
-             created_by: {
-                type: 'string',
-                 "x-hints": {
-                  form: {
-                    classes: [ "form-control" ]
-                  }
-                }
-             },
-             updated_at: {
-                type: 'string',
-                 "x-hints": {
-                  form: {
-                    classes: [ "form-control" ]
-                  }
-                }
-             },
-             updated_by: {
-                type: 'string',
-                 "x-hints": {
-                  form: {
-                    classes: [ "form-control" ]
-                  }
-                }
-             },
+             // created_at: {
+             //    type: 'string',
+             //     "x-hints": {
+             //      form: {
+             //        classes: [ "form-control" ]
+             //      }
+             //    }
+             // },
+             // created_by: {
+             //    type: 'string',
+             //     "x-hints": {
+             //      form: {
+             //        classes: [ "form-control" ]
+             //      }
+             //    }
+             // },
+             // updated_at: {
+             //    type: 'string',
+             //     "x-hints": {
+             //      form: {
+             //        classes: [ "form-control" ]
+             //      }
+             //    }
+             // },
+             // updated_by: {
+             //    type: 'string',
+             //     "x-hints": {
+             //      form: {
+             //        classes: [ "form-control" ]
+             //      }
+             //    }
+             // },
         };
 
         return properties;
@@ -186,7 +216,7 @@ var Product = React.createClass( {
     let _self = this;
 
         var editable = cells.edit.bind(_self, 'editedCell', (value, celldata, rowIndex, property) => {
-            console.log('edit----change-------------------',_self.state.data);
+            // console.log('edit----change-------------------',_self.state.data);
             var idx = findIndex(_self.state.data, {
                 id: celldata[rowIndex].id,
             });
@@ -308,16 +338,12 @@ var Product = React.createClass( {
                                     // console.log('schema=',schema);
 
                                     var onSubmit = (editData, editValue) => {
-                                        _self.refs.modal1.hide();
-                                        console.log('onSubmit',editData,editValue);
+                                        console.log('onEdit',editData,editValue);
                                         if(editValue === 'Cancel') {
-                                            console.log('Cancel');
                                             return;
                                         }
-                                        // // _self.state.data[idx] = editData;
-                                        // _self.setState({
-                                        //     data: _self.state.data
-                                        // });
+                                        ProductActions.updateProduct(editData);
+                                        _self.refs.modal.hide();
                                     };
 
 
@@ -337,48 +363,50 @@ var Product = React.createClass( {
                                            },
                                      });//setState
 
-                                    _self.refs.modal1.show();
+                                    _self.refs.modal.show();
                                 }; // edit
 
-                                 var remove = ()=>{
-                                   _self.state.delidx = idx;
-                                   console.log('remove click----------------------->');
-                                 // <!-- modalIsOpen: true -->
-                                 // _self.setState({
-                                 //   model: {
-                                 //       title: 'Remove Test',
-                                 //       content: _self.state.data[idx],
-                                 //       editing:2,
-                                 //       },
-                                 //       });
-                                 // _self.refs.modal.show();
-                                 if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
-                                        console.log("You pressed OK!");
-                                        console.log(_self.state.data[idx]);
-                                    } else {
-                                        console.log("You pressed Cancel!");
-                                    }
 
-                                 };  // remove  
+                                 // var remove = ()=>{
+                                 //   _self.state.delidx = idx;
+                                 //   console.log('remove click----------------------->');
+                                 // if(confirm("คุณแน่ใจที่จะ ลบ! \n"+_self.state.data[idx].name) == true) {
+                                 //        console.log("You pressed OK!");
+                                 //        console.log(_self.state.data[idx]);
+                                 //    } else {
+                                 //        console.log("You pressed Cancel!");
+                                 //    }
 
-                                // var remove = ()=>{
-                                //     _self.state.delidx = idx;
-                                //        // <!-- modalIsOpen: true -->
-                                //     _self.setState({
-                                //       model: {
-                                //                 title: 'Remove Test',
-                                //                 content: _self.state.data[idx],
-                                //                 editing:2,
-                                //              },
-                                //     });
-                                //     _self.refs.modal.show();
-                                // };  // remove               
+                                 // };  // remove  
+
+                                var remove = ()=>{
+                                    _self.state.delidx = idx;
+                                    _self.setState({
+                                      modal: {
+                                                title: 'Are you sure want to delete ?',
+                                                content: _self.state.data[idx].name,
+                                                idx:_self.state.data[idx].id,
+                                                method:'delete',
+                                             },
+                                    });
+                                    _self.refs.xmodal.show();
+                                };  // remove               
+
+
+
+
+
+
+
+
+
                                return {
                                     value: ( 
                                     <span>
                                         <span className='edit' onClick={edit.bind(_self)} style={{cursor: 'pointer'}}>
                                             &#8665;
                                         </span>
+                                        &nbsp;&nbsp;&nbsp;
                                         <span className='remove' onClick={remove.bind(_self)} style={{cursor: 'pointer'}}>
                                             &#10007;
                                         </span>
@@ -401,6 +429,19 @@ var Product = React.createClass( {
         var columns = _self.getColumn();
         var data =    _self.state.data;
         var pagination = _self.state.pagination;
+
+        let onYesNo = function(data, buttonValue, method) {
+          if(buttonValue=='No' ) {
+          } else {
+              if(method =='delete' && buttonValue == 'Yes'){
+              console.log('Data  : '+JSON.stringify(data)+'\n'+
+                  'Button: '+buttonValue+'\n'+
+                  'Errors: '+JSON.stringify(method));
+              ProductActions.delProduct(JSON.stringify(data));
+          }
+         }
+          _self.refs.xmodal.hide();
+       };
 
         if (_self.state.search.query) {
             data = Search.search(
@@ -450,19 +491,20 @@ var Product = React.createClass( {
                               onSelect={_self.onSelect} />
                       </div>
                     </div>
-
-                 <SkyLight 
-                       dialogStyles={dialogStyles}
-                       ref='modal' title={_self.state.modal.title} > 
-                       <Frmedit parent={_self} content={_self.state.modal.content}  /> 
-                 </SkyLight>
                  <SkyLight    
                         dialogStyles={dialogStyles}
-                        ref='modal1' title={_self.state.modal.title} >
+                        ref='modal' title={_self.state.modal.title} >
                         {this.state.modal.content}
                  </SkyLight>
-
-
+                 <SkyLight dialogStyles={YesNostyle}
+                       ref='xmodal'> 
+                       <Confirmer onYesNo={onYesNo} 
+                                  subtitle={this.state.modal.content}
+                                  title={this.state.modal.title}
+                                  idx = {this.state.modal.idx}
+                                  method = {this.state.modal.method}
+                                  />
+                 </SkyLight>
             </div>
           </div>
         </div>
@@ -480,7 +522,7 @@ var Product = React.createClass( {
   },
   _Additem(){
         let _self = this;
-        console.log('show modal');
+        // console.log('show modal');
         var schema = {
                type: 'object',
                properties: properties()
@@ -488,16 +530,14 @@ var Product = React.createClass( {
 
 
         var onSubmit = (editData, editValue) => {
-                                this.refs.modal1.hide();
-                                console.log('onSubmit',editData,editValue);
+                                console.log('add product',editData,editValue);
                                 if(editValue === 'Cancel') {
-                                    console.log('Cancel');
+                                    this.refs.modal.hide();
                                     return;
+                                } else {
+                                  ProductActions.addProduct(editData);
                                 }
-                                // // this.state.data[idx] = editData;
-                                // this.setState({
-                                //     data: this.state.data
-                                // });
+                                this.refs.modal.hide();
                             };
 
 
@@ -517,7 +557,7 @@ var Product = React.createClass( {
                },
          });//setState
 
-        _self.refs.modal1.show();
+        _self.refs.modal.show();
   },
     onSearch(search) {
     let _self = this;
@@ -545,3 +585,4 @@ var Product = React.createClass( {
 } );
 
 export default Product;
+

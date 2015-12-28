@@ -26,7 +26,6 @@ var InputField = React.createClass({
     }
   },
   render: function() {
-    console.log('--------------form conctrl --------');
     return $.input({
       type      : "text",
       name      : this.props.label,
