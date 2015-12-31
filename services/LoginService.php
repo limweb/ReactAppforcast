@@ -27,7 +27,8 @@ class LoginService extends RestfulServer {
 							$o->type = 'user';
 						}
 						$o->level =$u->level;
-						$o ->img = 'https://scontent.fbkk5-2.fna.fbcdn.net/hprofile-xap1/v/t1.0-1/p200x200/10430jpg?oh=0953fb792b339f355ab7d779a195f636&oe=56CEA566';
+						$o->img = '/images/avatar.png';
+						// $o ->img = '/https://scontent.fbkk5-2.fna.fbcdn.net/hprofile-xap1/v/t1.0-1/p200x200/10430jpg?oh=0953fb792b339f355ab7d779a195f636&oe=56CEA566';
 						$_SESSION['user'] = $o;
 						$this->response($o);
 				} else {
@@ -38,6 +39,12 @@ class LoginService extends RestfulServer {
 		}
 
 		public function postLogout(){
+			 consolelog('logout');
+			 session_destroy();
+			 (!$this->format ? $this->format = 'json' : null);
+             $this->response('logout successed');
+		}
+		public function getLogout(){
 			 consolelog('logout');
 			 session_destroy();
 			 (!$this->format ? $this->format = 'json' : null);

@@ -90,6 +90,18 @@ class IndexApp extends RestfulServer {
 						td {
 							white-space: nowrap;
 						}
+
+						.userbrand {
+							width: 200px;
+						}
+						.userinfo {
+							 display: flex;
+						    /* Vertical align: */
+						    align-items: center;
+						    /* Horizontal align: */
+						    justify-content: center;
+						}
+
 					</style>
 				</head>
 				<body>

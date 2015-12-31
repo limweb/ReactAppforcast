@@ -64,16 +64,17 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
       },    
       render: function() {
         let _self = this;
-        var dwl = this.props.dropdownlist
+        var dwl = _self.props.dropdownlist
+        console.log('dwl==================>',_self.props);
         var i = '';
-        if(this.props.i != undefined ){
-           i = this.props.i;
+        if(_self.props.i != undefined ){
+           i = _self.props.i;
         }
         return (
-                <li className={this.props.isCurrent ? this.props.c+' active dropdown' : this.props.c + ' dropdown' } >
+                <li className={_self.props.isCurrent ? _self.props.c+' active dropdown' : _self.props.c + ' dropdown' } >
                   <a href="#" className="dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                    <i className={i}> </i>&nbsp; 
-                   {this.props.name} <span className="caret"></span>
+                   {_self.props.name} <span className="caret"></span>
                    </a>
                   <DropdownItem  tab={dwl} handleClick={_self.handleClick}
                   />
@@ -132,7 +133,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
       },    
       render: function() {
         let _self = this;
-        console.log('LNAV=',_self.props.tabList);
+        // console.log('LNAV=',_self.props.tabList);
         if(_self.props.tabList) {
         return (
             <div>
@@ -140,9 +141,9 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
                  { 
 
                   _self.props.tabList.map(function(tab) { 
-                    console.log('tab=',tab);
+                    // console.log('tab=',tab);
                     if(tab.type == 'tab'){
-                        console.log('tab.id=',tab.id);
+                        // console.log('tab.id=',tab.id);
                         return (<Tab handleClick={_self.handleClick.bind(_self, tab)}
                                       key={tab.id}
                                       url={tab.url}
@@ -156,7 +157,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
                                         key={tab.id}
                                         url={tab.url}
                                         name={tab.name}
-                                        dropdownlist={tab.dropdownlist}
+                                        dropdownlist={tab.dorpdownlist}
                                         c = {tab.class}
                                         i = {tab.i}
                                         isCurrent={(_self.props.currentTab === tab.id)}
@@ -195,28 +196,30 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
             <div>
               <ul className="nav navbar-nav navbar-right">
                  { this.props.tabList.map(function(tab) { 
+                    console.log('tab====================',tab.type);
                     if(tab.type == 'tab'){
-                       return (<Tab handleClick={this.handleClick.bind(this, tab)}
+                       return (<Tab handleClick={_self.handleClick.bind(_self, tab)}
                                     key={tab.id}
                                     url={tab.url}
                                     name={tab.name}
                                     c = {tab.class}
                                     i = {tab.i}
-                                    isCurrent={(this.props.currentTab === tab.id)}
+                                    isCurrent={(_self.props.currentTab === tab.id)}
                           />);
                      } else {
+                      console.log(tab);
                       return (<Dropdown handleClick={_self.drowdownClick.bind(_self,tab)}
                                     key={tab.id}
                                     url={tab.url}
                                     name={tab.name}
-                                    dropdownlist={tab.dropdownlist}
+                                    dropdownlist={tab.dorpdownlist}
                                     c = {tab.class}
                                     i = {tab.i}
-                                    isCurrent={(this.props.currentTab === tab.id)}
+                                    isCurrent={(_self.props.currentTab === tab.id)}
                       />);
                      }
-                 }.bind(this))}
-                {this.props.children}           
+                 }.bind(_self))}
+                {_self.props.children}           
               </ul> 
             </div>
         );
@@ -261,15 +264,19 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
            this.props.user.name = 'UserName';
         }
 
-        return (<ul className="nav navbar-nav navbar-right">
+        return (<ul className="nav navbar-nav navbar-right userbrand">
                 <li className="dropdown">
                   <a href="#" className="dropdown-toggle profile-image" data-toggle="dropdown">
-                          <img width="30px" height="30px" src={ this.props.user.img ? this.props.user.img : 'images/30x30.png' } className="img-circle special-img" /> &nbsp;{this.props.user.name}<b className="caret"></b>&nbsp;&nbsp;
-                   </a>
+                        <div className="userinfo" >
+                          <img width="30px" height="30px" src={ this.props.user.img ? this.props.user.img : 'images/avatar.png' } className="img-circle special-img" />
+                          <span>&nbsp;&nbsp;{this.props.user.name}</span>
+                          <b className="caret"></b>
+                        </div>
+                  </a>
                   <ul className="dropdown-menu">
-                              <li><a onClick={this.account} href="#"><i className="fa fa-cog"></i> Account</a></li>
-                              <li className="divider"></li>
-                              <li><a onClick={this.logout} href="#"><i className="fa fa-sign-out"></i> Sign-out</a></li>
+                      <li><a onClick={this.account} href="#"><i className="fa fa-cog"></i> Account</a></li>
+                      <li className="divider"></li>
+                      <li><a onClick={this.logout} href="#"><i className="fa fa-sign-out"></i> Sign-out</a></li>
                   </ul>
                 </li>
               </ul>
@@ -282,8 +289,8 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
     var Content = React.createClass({
         render: function(){
             let _this = this;
-            console.log('current tab =',this.props.currentTab);
-            console.log('***********************************props in Content = ',_this.props);
+            // console.log('current tab =',this.props.currentTab);
+            // console.log('***********************************props in Content = ',_this.props);
                 return(
                         <div className="tab-content">
                             { this.props.currentTab === 1   ? <Order  className="tab-pane" />  :null}
@@ -318,7 +325,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
         let _self = this;
         let modal = this.refs.modal;
         if(data.action == 'show') {
-          console.log('inshow');
+          // console.log('inshow');
           $(ReactDOM.findDOMNode(modal)).show();
           if(data.time > 0 ) {
              setTimeout(function(){
@@ -330,7 +337,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
         }
       },
       onConfig:function(data) {
-        console.log('---onConfig=',data,'---------------------------------------');
+        // console.log('---onConfig=',data,'---------------------------------------');
         this.setState({
            tabList: data.tabList,
            tabListr: data.tabListr,
@@ -382,7 +389,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
            data: {},
          })
          .done(function(data) {
-           // console.log("success",data);
+           console.log("----------success",data);
            _this.state.user.name = data.data.name;
            _this.state.user.type = data.data.type;
            _this.state.user.email = data.data.email;
@@ -459,8 +466,8 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
         );
       },
       render: function() {
-        console.log('thisstate=',this.state);
-        console.log('currentTab  = 12 y/n =',this.state);
+        // console.log('thisstate=',this.state);
+        // console.log('currentTab  = 12 y/n =',this.state);
         // return  this.renderMain();          
         if(this.state.user.name != ''){
           // console.log('main')
@@ -478,7 +485,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
         let _self = this;
         let modal = this.refs.modal;
         if(data.action == 'show') {
-          console.log('inshow');
+          // console.log('inshow');
           $(ReactDOM.findDOMNode(modal)).show();
           if(data.time > 0 ) {
              setTimeout(function(){

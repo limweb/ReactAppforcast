@@ -4,7 +4,7 @@ import $ from  'jquery';
 import appcfg  from '../appcfg';
 
 var LoginStore =  Reflux.createStore({
-        "user":{ name:'',pass:'',type:''},
+        "user":{name:'',type:'',email:'',img:'',pass:''},
         listenables: [LoginActons],
         onGetLogin: function(item){
             let _self = this;
@@ -19,10 +19,11 @@ var LoginStore =  Reflux.createStore({
                     }.bind(_self),
                     success: function(data, textStatus, xhr) {
                        console.log('------------------------------data=',data);
-                       _self.user.name = data.name;
-                       _self.user.pass = data.email;
-                       _self.user.type = data.type;
-                       _self.user.img = data.img;
+                       _self.user = data.data;
+                       // _self.user.name = data.name;
+                       // _self.user.pass = data.email;
+                       // _self.user.type = data.type;
+                       // _self.user.img = data.img;
                        _self.trigger(_self.user);
                     }.bind(_self),
                     error: function(xhr, textStatus, errorThrown) {
