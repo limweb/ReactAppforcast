@@ -328,7 +328,7 @@ class RestfulServer {
                     // Set HTTP Response Content Type
                 header('Content-Type: application/json; charset=utf-8');
                     // Format data into a JSON response
-                $json_response = json_encode($api_response);
+                $json_response = json_encode($api_response,JSON_UNESCAPED_UNICODE);
                     // Deliver formatted data
                 echo $json_response;
             }elseif( strcasecmp($format,'xml') == 0 ){

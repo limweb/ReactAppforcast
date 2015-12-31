@@ -11,12 +11,21 @@ var Perpage = React.createClass({
 		let _self = this;
 		console.log('perpage =',_self.props);
 		if(_self.props.show){
-			return (
-                <div className='per-page-container'>
-                    Per page <input type='text' defaultValue={_self.props.pagination.perPage} onChange={_self.onPerPage}  ></input>
-                    &nbsp;<input type="button" name="btnAdd" value="AddItem" onClick={_self._Additem} />
-                </div>
-			);
+
+			if(_self.props.showadd == 1) {
+				return (
+	                <div className='per-page-container'>
+	                    Per page <input type='text' defaultValue={_self.props.pagination.perPage} onChange={_self.onPerPage}  ></input>
+	                </div>
+				);
+			} else {
+				return (
+	                <div className='per-page-container'>
+	                    Per page <input type='text' defaultValue={_self.props.pagination.perPage} onChange={_self.onPerPage}  ></input>
+	                    &nbsp;<input type="button" name="btnAdd" value="AddItem" onClick={_self._Additem} />
+	                </div>
+				);
+			}
 		} else {
 			return (<div></div>);
 		}

@@ -5,11 +5,11 @@ import { ForcastActions, ForcastStore } from '../../store/forcaststore';
 import Perpage from '../perpage';
 import Pagesearch from '../pagesearch';
 import Paginator from 'react-pagify';
+import Dropdown  from '../../common_compoennts/Dropdown';
 import { Table,Search,sortColumn,editors,formatters,predicates,cells  } from 'reactabular';
 import  Overlay  from '../overlay';
 import _ from 'lodash';
 import $ from 'jquery';
-import appcfg  from '../../appcfg';
 
 let highlight = formatters.highlight;
 let findIndex =  _.findIndex;
@@ -18,7 +18,9 @@ var datasources = {
   data:[],
 };
 
-var columns = [];
+var columns   = [];
+var salelist  = [];
+var monthlist = [];
 
 function getproperty(){
 	return {
@@ -105,11 +107,14 @@ var Forcast = React.createClass( {
 	onStore:function(data) {
 		datasources.data = data.data;
 		columns = data.columns;
+		salelist = data.salelist;
+		monthlist = data.monthlist;
 		this.setState({
 			data:data.data,
             columns: this.getColumn(),
             header:  this.getHeader(),
 		});
+		$(ReactDOM.findDOMNode(this.refs.overay)).hide();
 	},
 	getDefaultProps() {
 		return {
@@ -120,6 +125,8 @@ var Forcast = React.createClass( {
 	getInitialState: function() {
 
 		return {
+			saleid:null,
+			monthslug:null,
 			editedCell: null,
             delidx:null,
             modalIsOpen: false,
@@ -142,7 +149,7 @@ var Forcast = React.createClass( {
 		};
 	},
 	componentDidMount: function() {
-		ForcastActions.getForcasts();
+		ForcastActions.getForcatbySaleAndMonth();
 	},
 	getHeader(){
 		let _self = this;
@@ -246,17 +253,25 @@ var Forcast = React.createClass( {
         	return cols;
         }
 	},
-	exportForcast: function(){
-		let _self = this;
-		$(ReactDOM.findDOMNode(_self.refs.overay)).show();
-		setTimeout(function(){
-			bootbox.confirm('export data',function(result){
-				$(ReactDOM.findDOMNode(_self.refs.overay)).hide();
-				if(result) {
-					window.open(appcfg.host + '/services/ExportService.php','_blank');
-				}
-			});
-         },2000);
+	ForcastSaleSearch: function(val){
+		this.state.saleid = val;
+	},	
+	ForcastMonthSearch: function(val){
+		this.state.monthslug = val;
+	},
+	ForcastSearch: function(){
+		if(this.state.saleid == null || this.state.monthslug == null ) {
+			bootbox.alert('Please Select Sale and Month before See forcast.');
+		} else {
+			let data = {
+				saleid: this.state.saleid,
+				month: this.state.monthslug,
+			};
+			// bootbox.alert(data.saleid+':'+data.month);
+			console.log('data=',data);
+			ForcastActions.getForcatbySaleAndMonth(data);
+			$(ReactDOM.findDOMNode(this.refs.overay)).show();
+		}
 	},
 	render: function () {
 		let _self = this;
@@ -276,20 +291,32 @@ var Forcast = React.createClass( {
 
         data = sortColumn.sort(data, _self.state.sortingColumn);
         var paginated = Paginator.paginate(data, pagination);
+        if(salelist.length > 0 && _self.state.saleid == null)  {
+        	_self.state.saleid = salelist[0].value; 
+        	console.log('sale---id====',_self.state.saleid);
+        }
+        if(monthlist.length > 0 && _self.state.monthslug == null ) {
+        	_self.state.monthslug = monthlist[0].value; 
+        	console.log('monthslug---id====',_self.state.monthslug);
+        }
 		return (
 			<div>
 				<div className="row">
 				<br />
 					<div className="panel panel-default">
 						<div className="panel-heading">
-						<b>Forcast</b>
+						<b>Forcast by Sale and Month</b>
 						</div>
 							<div className="panel-body">
 				                     <Overlay ref="overay" />
 				                     <div className='controls'>
 			                        	<Perpage show={_self.props.showpage} showadd="1" pagination={pagination } onPerPage={_self.onPerPage} addItem={_self._Additem} />
-			                        	<div className="search-container">
-			                        		<button className="float right" type="button" onClick={_self.exportForcast} >Export</button>
+			                        	<div className="per-page-container">
+			                        	Select Sale: <Dropdown change={this.ForcastSaleSearch} data={salelist} />
+			                        	&nbsp;&nbsp;
+			                        	Select Month: <Dropdown change={this.ForcastMonthSearch} data={monthlist} />
+			                        	&nbsp;&nbsp;
+			                        	<button type="button" onClick={_self.ForcastSearch} >Search</button>		
 			                        	</div>
 				                        <Pagesearch show={_self.props.showsearch } columns={columns} data={data} onSearch={_self.onSearch} />
 				                    </div>

@@ -21,26 +21,26 @@ class AppService extends RestfulServer {
 
 		public function getMenu(){
 			if(isset($this->sessiones['user']) && $this->sessiones['user']->type == 'admin'){
-		        $tabs =  Menu::where('lr',0)->where('parent',0)->get();
+		        $tabs =  Menu::where('lr',0)->where('parent',0)->orderBy('order','asc')->get();
 		        	foreach ($tabs as $tab) {
 		        		if($tab->type == 'dropdown'){
 		        			$tab->dorpdownlist;
 		        		}
 		        	}
-		        $tabrs = Menu::where('lr',1)->where('parent',0)->get();
+		        $tabrs = Menu::where('lr',1)->where('parent',0)->orderBy('order','asc')->get();
 		        	foreach ($tabrs as $tab) {
 		        		if($tab->type == 'dropdown'){
 		        			$tab->dorpdownlist;
 		        		}
 		        	}
 			} else {
-		        $tabs =  Menu::where('lr',0)->where('parent',0)->where('r','<',9)->get();
+		        $tabs =  Menu::where('lr',0)->where('parent',0)->where('r','<',9)->orderBy('order','asc')->get();
 		        	foreach ($tabs as $tab) {
 		        		if($tab->type == 'dropdown'){
 		        			$tab->dorpdownlist;
 		        		}
 		        	}
-		        $tabrs = Menu::where('lr',1)->where('parent',0)->where('r','<',9)->get();
+		        $tabrs = Menu::where('lr',1)->where('parent',0)->where('r','<',9)->orderBy('order','asc')->get();
 		        	foreach ($tabrs as $tab) {
 		        		if($tab->type == 'dropdown'){
 		        			$tab->dorpdownlist;

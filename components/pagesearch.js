@@ -18,7 +18,7 @@ var Pagesearch = React.createClass({
 				</div>
 			);
 		} else  {
-			return (<div></div>);
+			return (<div>---No item---</div>);
 		}
 	},
 	onSearch(search){

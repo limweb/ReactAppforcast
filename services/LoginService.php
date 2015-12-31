@@ -21,7 +21,12 @@ class LoginService extends RestfulServer {
 						$o->id = $u->id;
 						$o->name = $u->name;
 						$o->email =$u->email;
-						$o->type = 'admin';
+						if($u->level >= 8 ) {
+							$o->type = 'admin';
+						} else {
+							$o->type = 'user';
+						}
+						$o->level =$u->level;
 						$o ->img = 'https://scontent.fbkk5-2.fna.fbcdn.net/hprofile-xap1/v/t1.0-1/p200x200/10430jpg?oh=0953fb792b339f355ab7d779a195f636&oe=56CEA566';
 						$_SESSION['user'] = $o;
 						$this->response($o);
@@ -41,7 +46,7 @@ class LoginService extends RestfulServer {
 
 		public function postChklogin(){
 			// dump($this);
-			if($this->sessiones['user']){
+			if(isset($this->sessiones['user'])){
 				$this->response($this->sessiones['user'],'json');
 			}else {
 				$this->rest_error('-1','error');

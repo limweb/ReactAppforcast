@@ -507,5 +507,6 @@ body.modal-is-shown {
 
 .btn-default {
   padding: 10px 20px;
-  margin: 1rem;
+  /*margin: 1rem;*/
+  margin: 1rem 7px -1px;
 }

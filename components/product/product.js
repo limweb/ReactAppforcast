@@ -340,6 +340,7 @@ var Product = React.createClass( {
                                     var onSubmit = (editData, editValue) => {
                                         console.log('onEdit',editData,editValue);
                                         if(editValue === 'Cancel') {
+                                            _self.refs.modal.hide();
                                             return;
                                         }
                                         ProductActions.updateProduct(editData);

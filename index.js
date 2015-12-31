@@ -8,6 +8,7 @@ import Sale  from './components/sale/sale';
 // import Product  from './components/product';
 import Product  from './components/product/product';
 import Forcast  from './components/forcast/forcast';
+import Forcastcust  from './components/forcast_cust/forcastcus';
 import Report  from './components/reports';
 import ContelItem  from './components/contentitem';
 import Setting from './components/setting';
@@ -282,7 +283,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
         render: function(){
             let _this = this;
             console.log('current tab =',this.props.currentTab);
-            // console.log('props in Content = ',_this.props);
+            console.log('***********************************props in Content = ',_this.props);
                 return(
                         <div className="tab-content">
                             { this.props.currentTab === 1   ? <Order  className="tab-pane" />  :null}
@@ -290,13 +291,14 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
                             { this.props.currentTab === 3   ? <Sale       className="tab-pane" />  :null}
                             { this.props.currentTab === 4   ? <Product    className="tab-pane" />  :null}
                             { this.props.currentTab === 5   ? <Forcast    className="tab-pane" />  :null}
+                            { this.props.currentTab === 16  ? <Forcastcust    className="tab-pane" />  :null}
                             { this.props.currentTab === 6   ? <ContelItem className="tab-pane" id="home1"       text="Home"/>:null }
                             { this.props.currentTab === 10  ? <ContelItem className="tab-pane" id="home2"       text="Home"/>:null }
                             { this.props.currentTab === 11  ? <ContelItem className="tab-pane" id="home3"       text="Home"/>:null }
                             { this.props.currentTab === 13  ? <ContelItem className="tab-pane" id="home5"       text="Home"/>:null }
                             { this.props.currentTab === 14  ? <ContelItem className="tab-pane" id="messages"    text="Message" />:null }
                             { this.props.currentTab === 15  ? <ContelItem className="tab-pane" id="profile"     text="Profile" />:null }
-                            { this.props.currentTab === 16  ? <ContelItem className="tab-pane" id="settings"    text="Setting" />:null }
+                            { this.props.currentTab === 17  ? <ContelItem className="tab-pane" id="settings"    text="Setting" />:null }
                             { this.props.currentTab === 20  ? <ContelItem className="tab-pane" id="settings20"  text="Action1" /> :null }
                             { this.props.currentTab === 21  ? <ContelItem className="tab-pane" id="settings21"  text="Another Action" /> :null }
                             { this.props.currentTab === 22  ? <ContelItem className="tab-pane" id="settings22"  text="Something else here" /> :null }
