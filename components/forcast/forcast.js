@@ -109,6 +109,7 @@ var Forcast = React.createClass( {
 			data:data.data,
             columns: this.getColumn(),
             header:  this.getHeader(),
+            user: data.user,
 		});
 	},
 	getDefaultProps() {
@@ -138,8 +139,18 @@ var Forcast = React.createClass( {
                 perPage: 10
             },
             header:null,
+            user:null,
             columns:[]
 		};
+	},
+	chkExport: function(){
+		let _self = this;
+		console.log('-------------------------user----',_self.state.user);
+		if(_self.state.user != null && _self.state.user.level >= 8 ){
+			return (<div className="search-container">
+			   <button className="float right" type="button" onClick={_self.exportForcast} >Export</button>
+			   </div>);
+		}
 	},
 	componentDidMount: function() {
 		ForcastActions.getForcasts();
@@ -166,7 +177,6 @@ var Forcast = React.createClass( {
 	},
 	getColumn(){
 		let _self = this;
-
 		var properties = getproperty();
         // var properties = {
         //     id:{
@@ -251,12 +261,12 @@ var Forcast = React.createClass( {
 		$(ReactDOM.findDOMNode(_self.refs.overay)).show();
 		setTimeout(function(){
 			bootbox.confirm('export data',function(result){
-				$(ReactDOM.findDOMNode(_self.refs.overay)).hide();
 				if(result) {
 					window.open(appcfg.host + '/services/ExportService.php','_blank');
 				}
+				$(ReactDOM.findDOMNode(_self.refs.overay)).hide();
 			});
-         },2000);
+         },100);
 	},
 	render: function () {
 		let _self = this;
@@ -264,7 +274,7 @@ var Forcast = React.createClass( {
         var columns = _self.getColumn();
         var data =    _self.state.data;
         var pagination = _self.state.pagination;
-
+        var chkexp = _self.chkExport();
         if (_self.state.search.query) {
             data = Search.search(
                 data,
@@ -288,9 +298,7 @@ var Forcast = React.createClass( {
 				                     <Overlay ref="overay" />
 				                     <div className='controls'>
 			                        	<Perpage show={_self.props.showpage} showadd="1" pagination={pagination } onPerPage={_self.onPerPage} addItem={_self._Additem} />
-			                        	<div className="search-container">
-			                        		<button className="float right" type="button" onClick={_self.exportForcast} >Export</button>
-			                        	</div>
+			                        	{chkexp}
 				                        <Pagesearch show={_self.props.showsearch } columns={columns} data={data} onSearch={_self.onSearch} />
 				                    </div>
 									<Table width="100%"

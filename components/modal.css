@@ -328,7 +328,7 @@ h1 {
   color: #444;
   font-weight: normal;
 }
-.btn-primary {
+/*.btn-primary {
   background: #0070cd;
   border: none;
   color: #fff;
@@ -336,11 +336,12 @@ h1 {
   padding: 10px 20px;
   margin: 1rem;
   border-bottom: 2px solid #005aa4;
-}
-.btn-primary:hover {
+}*/
+
+/*.btn-primary:hover {
   background: #0081eb;
   border-bottom: 2px solid #0065b8;
-}
+}*/
 .ui-modal .btn-primary {
   margin: 0;
   margin-left: 1rem;
@@ -506,7 +507,7 @@ body.modal-is-shown {
 }
 
 .btn-default {
-  padding: 10px 20px;
+  padding: 7px 26px;
   /*margin: 1rem;*/
-  margin: 1rem 7px -1px;
+  /*margin: 1rem 7px -1px;*/
 }

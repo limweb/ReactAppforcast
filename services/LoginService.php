@@ -44,11 +44,38 @@ class LoginService extends RestfulServer {
 			 (!$this->format ? $this->format = 'json' : null);
              $this->response('logout successed');
 		}
-		public function getLogout(){
-			 consolelog('logout');
-			 session_destroy();
-			 (!$this->format ? $this->format = 'json' : null);
-             $this->response('logout successed');
+
+		public function postChangepass(){
+			try {
+				(!$this->format ? $this->format = 'json' : null);
+				if(!isset($this->sessiones['user'])){
+					throw new Exception("You do not login can't change password ", 1);
+				}
+				if(isset($this->input->oldpass) && isset($this->input->newpass ) ) {
+				
+				$email = $this->sessiones['user']->email;
+				consolelog('email====>',$email);
+				$pass = $this->input->oldpass;
+				consolelog('old pass====>',$pass);
+				consolelog('new pass====>',$this->input->newpass);
+				$u =  Sale::where('email',$email)->first();
+					if( $u && password_verify($pass, $u->password) ) {
+						$u->password = password_hash($this->input->newpass,PASSWORD_DEFAULT);		
+						$rs = $u->save();
+						if($rs) {
+							$o = new stdClass();
+							$o->data = 'Change Password Successed.';
+							$this->response($o);
+						}
+					}else{
+						throw new Exception('Password not match', 1);
+					}	
+				} else {
+					throw new Exception("Please fill all input ", 1);
+				}
+			} catch (Exception $e) {
+				$this->rest_error(-1,$e->getMessage(),'json');
+			}
 		}
 
 		public function postChklogin(){
@@ -58,6 +85,19 @@ class LoginService extends RestfulServer {
 			}else {
 				$this->rest_error('-1','error');
 			}
+		}
+
+		public function getUserinfo(){
+			try {
+				(!$this->format ? $this->format = 'json' : null);
+				if(!isset($this->sessiones['user'])){
+					throw new Exception("Please Login", 1);
+				}
+				$this->response($this->sessiones['user'],'json');
+			} catch (Exception $e) {
+				$this->rest_error(-1,$e->getMessage(),'json');
+			}
+
 		}
 
 }

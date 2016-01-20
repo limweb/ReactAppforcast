@@ -408,6 +408,7 @@ class  ForcastService extends RestfulServer {
 			$o = new stdClass();
 			$o->columns = $columns;
 			$o->data = $rs;
+			$o->user = $this->sessiones['user'];
 			$this->response($o);
 			// //dump($rs);
 			// echo '<table border="1px"><tr>';

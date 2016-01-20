@@ -24,7 +24,8 @@ import $ from 'jquery';
 import Modal  from './components/modal';
 import Trigger  from './components/trigger';
 import { OverlayActions, OverlayStore } from './store/overlaystore';
-
+import { ChangePassServiceActions, ChangePassServiceStore } from './store/changepassstore';
+import { UserinfoActions, UserinfoStore } from './store/userinfostore';
  
     var DropdownItem = React.createClass({
       handleClick: function(e,f){
@@ -254,9 +255,59 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
     var UserBrand = React.createClass({
       logout: function(){
           LoginActons.getLogout();
+          // this.props.changeTab();
+      },
+      changpass: function(){
+          bootbox.dialog({
+                          title: "Change Password.",
+                          message: 
+'<div class="row"> '+
+'     <div class="col-md-12"> '+
+'          <form class="form-horizontal"> '+
+'               <div class="form-group"> '+
+'                    <label class="col-md-4 control-label" for="name">Old Password</label> '+
+'                    <div class="col-md-4"> '+
+'                         <input id="oldpass" name="oldpass" type="text" placeholder="Old password" class="form-control input-md"> '+
+'                    </div> '+
+'               </div> '+
+'               <div class="form-group"> '+
+'                    <label class="col-md-4 control-label" for="awesomeness">New Password</label> '+
+'                    <div class="col-md-4">  '+
+'                         <input id="newpass" name="newpass" type="text" placeholder="New Password" class="form-control input-md"> '+
+'                    </div>  '+
+'               </div> '+
+'          </form>  '+
+'     </div>   '+
+'</div> ',
+                          buttons: {
+                              cancel: {
+                                  label: "Cancel",
+                                  className: "btn-default",
+                                  callback: function() {
+                                    console.log('click cancel');
+                                  }
+                              },
+                              success: {
+                                  label: "Change",
+                                  className: "btn-success",
+                                  callback: function () {
+                                      var oldpass = $('#oldpass').val();
+                                      var newpass = $('#newpass').val();
+                                      console.log('ok pass is=',oldpass,'/',newpass);
+                                      let data = {
+                                          "oldpass": oldpass,
+                                          "newpass": newpass,
+                                      }
+                                      ChangePassServiceActions.getChangePassServices(data);
+                                  }
+                              },
+                          }
+                      }
+                  );
       },
       account: function(){
-          LoginActons.chkUser();
+          // LoginActons.chkUser();
+          UserinfoActions.getUserinfo();
       },
       render: function() {
         // console.log('userbrand=',this.props);
@@ -275,6 +326,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
                   </a>
                   <ul className="dropdown-menu">
                       <li><a onClick={this.account} href="#"><i className="fa fa-cog"></i> Account</a></li>
+                      <li><a onClick={this.changpass} href="#"><i className="fa fa-cog"></i> ChangePassword</a></li>
                       <li className="divider"></li>
                       <li><a onClick={this.logout} href="#"><i className="fa fa-sign-out"></i> Sign-out</a></li>
                   </ul>
@@ -320,8 +372,38 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
 
 
    var App = React.createClass({
-      mixins:[  Reflux.listenTo(LoginStore,'onStore'),Reflux.listenTo(AppStore,'onConfig'),Reflux.listenTo(OverlayStore,'onOverlay')],
-      onOverlay:function(data) {
+      mixins:[  
+            Reflux.listenTo(LoginStore,'onStore'),
+            Reflux.listenTo(AppStore,'onConfig'),
+            Reflux.listenTo(OverlayStore,'onOverlay'),
+            Reflux.listenTo(ChangePassServiceStore,'onChangePassStore'),
+            Reflux.listenTo(UserinfoStore,'onUnserinfoStore'),
+          ],
+      onUnserinfoStore: function(data){
+            let _self = this;
+            _self.setState({
+                userinfo:data 
+            });
+              let msg = 'Email: ' +data.email +'<br/> Name: '+ data.name + '<br /> Level: ' + data.level + '<br/> Type: '+ data.type ;
+              bootbox.dialog({
+                message: msg ,
+                title: "User Infomation:",
+                buttons: {
+                  success: {
+                    label: "OK",
+                    className: "btn-success"
+                  },
+                }
+              });
+      },
+      onChangePassStore: function(data){
+            let _self = this;
+            _self.setState({
+                changepassservice:data 
+            });
+            bootbox.alert('Change pass Successed.');
+      },
+      onOverlay: function(data) {
         let _self = this;
         let modal = this.refs.modal;
         if(data.action == 'show') {
@@ -446,7 +528,7 @@ import { OverlayActions, OverlayStore } from './store/overlaystore';
                       changeTab={this.changeTab}
                       dorpdownTab={this.dorpdownTab}
                     >
-                     <UserBrand {...this.state} />
+                     <UserBrand changeTab={this.changeTab}  {...this.state} />
                     </RNav>
                 </div>
               </div>

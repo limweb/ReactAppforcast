@@ -8,8 +8,9 @@ var LoginStore =  Reflux.createStore({
         listenables: [LoginActons],
         onGetLogin: function(item){
             let _self = this;
+                    // url: appcfg.host + '/services/LoginService.php/login',
             $.ajax({
-                    url: appcfg.host + '/services/LoginService.php/login',
+                    url:'/services/LoginService.php/login',
                     type: 'POST',
                     dataType: 'json',
                     data: JSON.stringify(item),
@@ -41,8 +42,9 @@ var LoginStore =  Reflux.createStore({
         onGetLogout: function(){
           let _self = this;
             console.log('logout');
+                  // url: appcfg.host + '/services/LoginService.php/logout',
             $.ajax({
-                  url: 'http://127.0.0.1:8000/services/LoginService.php/logout',
+                  url:'/services/LoginService.php/logout',
                   type: 'POST',
                   dataType: 'json',
                   data: {},
